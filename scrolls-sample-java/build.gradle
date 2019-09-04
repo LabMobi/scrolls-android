@@ -39,6 +39,7 @@ buildAllRelease.description = "Build Scrolls library and Sample release versions
 tasks.findByPath(':scrolls-sample-java:clean').mustRunAfter tasks.findByPath(':scrolls-lib:clean')
 tasks.findByPath(':scrolls-lib:build').mustRunAfter tasks.findByPath(':scrolls-sample-java:clean')
 tasks.findByPath(':scrolls-sample-java:build').mustRunAfter tasks.findByPath(':scrolls-lib:build')
+tasks.findByPath(':scrolls-lib:lib_copy_artifacts').mustRunAfter tasks.findByPath(':scrolls-sample-java:build')
 
 check.dependsOn ':scrolls-lib:check'
 afterEvaluate {

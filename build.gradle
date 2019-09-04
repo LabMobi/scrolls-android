@@ -58,7 +58,7 @@ allprojects {
 
         // VersionName
         String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_TWEAK
-        project.ext.versionName = baseVersionName + (isRelease ? "" : ".developmentbuild") + project.ext.versionCode
+        project.ext.versionName = baseVersionName + (isRelease ? ".b" : ".developmentbuild") + project.ext.versionCode
 
         // This is a synonym
         project.version = project.ext.versionName
