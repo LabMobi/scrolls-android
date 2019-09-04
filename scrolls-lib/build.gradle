@@ -36,13 +36,15 @@ project.ext.libProguardFiles = fileTree(project(':scrolls-lib').projectDir.absol
 }
 
 task(lib_copy_artifacts) doLast {
-    println "Coping Scrolls Library artifacts to " + project.ext.artifactDir + " .."
-    copy {
-        rename('mapping.txt', "${project.name}-mapping-${project.ext.versionCode}.txt")
-        from libFiles
-        from libProguardFiles
-        into file(project.ext.artifactDir)
-        eachFile { println it.file }
+    if (project.ext.artifactDir != null) {
+        println "Coping Scrolls Library artifacts to " + project.ext.artifactDir + " .."
+        copy {
+            rename('mapping.txt', "${project.name}-mapping-${project.ext.versionCode}.txt")
+            from libFiles
+            from libProguardFiles
+            into file(project.ext.artifactDir)
+            eachFile { println it.file }
+        }
     }
 }
 

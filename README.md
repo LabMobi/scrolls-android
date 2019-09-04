@@ -91,11 +91,22 @@ Notes:
 
 ## Building the library
 
-To build the library use the command
+### Build everything
+
+To build the library and the sample app use the command
 
 ```groovy
 ./gradlew buildAllRelease
 ```
 
-The Scrolls library *.aar can be found under the `scrolls-android\scrolls-lib\build\outputs\aar` folder and the sample app is under the `scrolls-android\scrolls-sample-java\build\outputs\apk` folder.
+After the build the Scrolls library *.aar and the sample application *.apk can be found under `scrolls-android\scrolls-lib\build\outputs` folder.
 
+### Build only the library
+
+To build only the library use the command
+
+```groovy
+./gradlew buildLibRelease
+```
+
+After the build the Scrolls library *.aar can be found under the `scrolls-android\scrolls-lib\build\outputs\aar` folder.

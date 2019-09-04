@@ -30,7 +30,7 @@ ext {
 allprojects {
     ext {
         // Paths
-        artifactDir = rootDir.absolutePath + '/scrolls-sample-java/build/outputs'
+        artifactDir = "" // We will set this down below
 
 
         // Tool versions
@@ -62,6 +62,12 @@ allprojects {
 
         // This is a synonym
         project.version = project.ext.versionName
+
+        if (project.gradle.startParameter.taskNames.contains("buildLibDebug") || project.gradle.startParameter.taskNames.contains("buildLibRelease")) {
+            project.ext.artifactDir = null
+        } else {
+            project.ext.artifactDir = rootDir.absolutePath + '/scrolls-sample-java/build/outputs'
+        }
     }
     repositories {
         google()
