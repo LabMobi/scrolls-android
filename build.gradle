@@ -29,6 +29,10 @@ ext {
 
 allprojects {
     ext {
+        // Paths
+        artifactDir = rootDir.absolutePath + '/scrolls-sample-java/build/outputs'
+
+
         // Tool versions
         versionCompileSdk = 28
         versionBuildTools = '28.0.3'

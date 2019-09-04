@@ -27,8 +27,28 @@ android {
     }
 }
 
+project.ext.libFiles = fileTree(project(':scrolls-lib').projectDir.absolutePath + '/build/outputs/aar/') {
+    include '*.aar'
+}
+
+project.ext.libProguardFiles = fileTree(project(':scrolls-lib').projectDir.absolutePath + '/build/outputs/mapping/release') {
+    include '*mapping.txt'
+}
+
+task(lib_copy_artifacts) doLast {
+    println "Coping Scrolls Library artifacts to " + project.ext.artifactDir + " .."
+    copy {
+        rename('mapping.txt', "${project.name}-mapping-${project.ext.versionCode}.txt")
+        from libFiles
+        from libProguardFiles
+        into file(project.ext.artifactDir)
+        eachFile { println it.file }
+    }
+}
+
+
 def GROUP_BUILD_TASKS = 'Build'
-task buildLibDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-lib:build'])
+task buildLibDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-lib:build', ':scrolls-lib:lib_copy_artifacts'])
 buildLibDebug.group = GROUP_BUILD_TASKS
 buildLibDebug.description = "Build Scrolls library debug version"
 

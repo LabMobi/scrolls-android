@@ -28,7 +28,7 @@ android {
 
 // BuildAll tasks
 def GROUP_BUILD_TASKS = 'Build'
-task buildAllDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-sample-java:clean', ':scrolls-lib:build',':scrolls-sample-java:build'])
+task buildAllDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-sample-java:clean', ':scrolls-lib:build',':scrolls-sample-java:build', ':scrolls-lib:lib_copy_artifacts'])
 buildAllDebug.group = GROUP_BUILD_TASKS
 buildAllDebug.description = "Build Scrolls library and Sample debug versions"
 
