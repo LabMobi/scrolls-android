@@ -1,0 +1,34 @@
+##
+PS: Posting needs the permission: <uses-permission android:name="android.permission.INTERNET" />
+##
+
+/* Configure posting to backend giving the project name */
+LogPostImpl.configure(this, "project_name");
+
+/*
+ * Get a new LogPostBuilder instance.
+ * The builder object has several methods for configuring parameters.
+ */
+LogPostBuilder builder = new LogPostBuilder();
+builder.addTags("my","first","post");    // Sample method to configure tags for the post
+
+/*
+ * Do the actual post by starting log posting activity.
+ */
+builder.launchActivity(context);
+
+
+#
+/*
+ * Easier ways to post logs:
+ * 1) You can use the LogPostActivity (if you want the post be visible to the user).
+ * Just call builder.launchActivity(context);
+ *
+ * 2) You can use the LogPostService (if you want to do a sneaky post on background and unnoticed). 
+ * Just call builder.launchService(context);
+ *
+ * 3) For file logs you can use the LogListActivity and the LogReaderActivity. 
+ * The first one gives you a list of available logs and the other one displays the contents. They also allow to post (they use LogPostActivity for this) and delete logs.
+ * Just start the LogListActivity by giving all the parameters by intent extras and do not forget to modify the Manifest for extra components (LogListActivity, LogReaderActivity and LogPostActivity).
+ */
+#

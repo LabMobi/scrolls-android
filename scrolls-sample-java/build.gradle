@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    google()
+    jcenter()
+}
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    compileSdkVersion project.ext.versionCompileSdk
+    buildToolsVersion project.ext.versionBuildTools
+    defaultConfig {
+        applicationId 'mobi.lab.scrolls.sample.java'
+        minSdkVersion project.ext.versionMinSdkVersion
+        targetSdkVersion project.ext.versionTargetSdk
+        versionCode project.ext.versionCode
+        versionName project.ext.versionName
+        project.archivesBaseName = "scrolls-sample-" + project.ext.versionName
+
+        println 'CONF: versionName is set to: ' + versionName
+        println 'CONF: versionCode is set to: ' + versionCode
+        println 'CONF: is a release build: ' + project.ext.isRelease
+    }
+}
+
+// BuildAll tasks
+def GROUP_BUILD_TASKS = 'Build'
+task buildAllDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-sample-java:clean', ':scrolls-lib:build',':scrolls-sample-java:build'])
+buildAllDebug.group = GROUP_BUILD_TASKS
+buildAllDebug.description = "Build Scrolls library and Sample debug versions"
+
+task buildAllRelease(dependsOn: ['buildAllDebug'])
+buildAllRelease.group = GROUP_BUILD_TASKS
+buildAllRelease.description = "Build Scrolls library and Sample release versions"
+
+tasks.findByPath(':scrolls-sample-java:clean').mustRunAfter tasks.findByPath(':scrolls-lib:clean')
+tasks.findByPath(':scrolls-lib:build').mustRunAfter tasks.findByPath(':scrolls-sample-java:clean')
+tasks.findByPath(':scrolls-sample-java:build').mustRunAfter tasks.findByPath(':scrolls-lib:build')
+
+check.dependsOn ':scrolls-lib:check'
+afterEvaluate {
+    connectedAndroidTest.dependsOn 'scrolls-lib:connectedAndroidTest'
+}
+build.mustRunAfter clean
+
+dependencies {
+    implementation project(':scrolls-lib')
+}

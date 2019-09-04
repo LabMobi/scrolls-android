@@ -1,0 +1,1 @@
+include ':scrolls-lib', ':scrolls-sample-java'

@@ -1,0 +1,70 @@
+/**
+ * Major version component, incremented when the VERSION_FEATURE reaches to 10.
+ */
+final String VERSION_MAJOR = "2"
+/**
+ * Feature version component, incremented when a feature is added. If it reaches 10 then it is set back to 0 and the VERSION_MAJOR is incremented by one.
+ */
+final String VERSION_FEATURE = "0"
+/**
+ * Tweak version component, incremented for smaller tweaks and bug fixes.
+ */
+final String VERSION_TWEAK = "4"
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+ext {
+    versionName = "0.0.1"
+    versionCode = 1
+    isRelease = false
+}
+
+allprojects {
+    ext {
+        // Tool versions
+        versionCompileSdk = 28
+        versionBuildTools = '28.0.3'
+        versionMinSdkVersion = 16
+        versionTargetSdk = 28
+
+        // Dependency versions
+        versionSupport = "27.1.1"
+    }
+
+    buildscript {
+        project.group = "mobi"
+        // Yes yes, I am cheating here.
+        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease")
+
+        String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
+        // VersionCode
+        if (suppliedBuildNumber == null || suppliedBuildNumber.equals("") || suppliedBuildNumber.equals("null")) {
+            project.ext.versionCode = 1
+        } else {
+            project.ext.versionCode = Integer.valueOf(suppliedBuildNumber) + 1
+        }
+
+        // VersionName
+        String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_TWEAK
+        project.ext.versionName = baseVersionName + (isRelease ? "" : ".developmentbuild") + project.ext.versionCode
+
+        // This is a synonym
+        project.version = project.ext.versionName
+    }
+    repositories {
+        google()
+        flatDir {
+            dirs 'libs'
+        }
+        mavenCentral()
+        jcenter()
+    }
+}

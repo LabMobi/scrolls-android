@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="hint_tags_input">Comma separated tags</string>
+    <string name="post_this_log">Post this log</string>
+    <string name="delete_this_log">Delete this log</string>
+    <string name="delete_all_except_current">Delete all except current</string>
+    <string name="no_logs_found">We are out of logs? O_o</string>
+    <string name="looking_for_logs">Looking for logs ..</string>
+    <string name="failed_to_delete_the_file">Failed to delete the file! Sorry :(</string>
+    <string name="file_deleted">Log deleted</string>
+    <string name="files_deleted">Logs deleted, kept only the current</string>
+    <string name="failed_to_delete_the_files">Failed to delete logs! Sorry :(</string>
+    <string name="failed_to_post_no_prj_name">Unable to post the log, project name not specified!</string>
+    <string name="failed_to_post_generic">Post failed! Sorry, but something went wrong ..</string>
+    <string name="failed_to_post_empty">Post failed! Log data is empty</string>
+    <string name="posting_log">Posting the log ..</string>
+    <string name="confirm_post_log">Do you want to post the current application log?</string>
+    <string name="log_post_success">Log post success"</string>
+    <string name="loading_the_log">Still loading? Must be a huge log! O_o</string>
+    <string name="failed_to_load_log_generic">Unable to open this log! Maybe it went outside for a walk?</string>
+    <string name="share">Share</string>
+    <string name="text_copied_to_clipboard">Line copied to clipboard</string>
+    <string name="mark_error_logs">Mark logs with errors</string>
+    <string name="reload_this_log">Reload</string>
+    <string name="retry">Retry</string>
+    <string name="title_dialog_retry">Posting failed</string>
+    <string name="title_email_chooser">Send email</string>
+</resources>

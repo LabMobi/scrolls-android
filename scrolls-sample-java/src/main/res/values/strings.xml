@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello scrolls-android-sample!</string>
+    <string name="app_name">java-scrolls-android-sample</string>
+	<string name="btn_post_logs_with_activity">Post logs with activity</string>
+	<string name="btn_post_logs_from_logcat">Post logs from Logcat</string>
+	<string name="btn_post_logs_with_service">Post logs with Service</string>
+	<string name="btn_view_logs">View logs</string>
+    <string name="btn_view_current_log">View current log</string>
+</resources>

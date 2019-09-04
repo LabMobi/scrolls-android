@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    compileSdkVersion project.ext.versionCompileSdk
+    buildToolsVersion project.ext.versionBuildTools
+    defaultConfig {
+        minSdkVersion project.ext.versionMinSdkVersion
+        targetSdkVersion project.ext.versionTargetSdk
+        versionName project.ext.versionName
+        versionCode project.ext.versionCode
+        project.archivesBaseName = "scrolls-" + project.ext.versionName
+
+        println 'CONF: versionName is set to: ' + versionName
+        println 'CONF: versionCode is set to: ' + versionCode
+        println 'CONF: is a release build: ' + project.ext.isRelease
+    }
+}
+
+def GROUP_BUILD_TASKS = 'Build'
+task buildLibDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-lib:build'])
+buildLibDebug.group = GROUP_BUILD_TASKS
+buildLibDebug.description = "Build Scrolls library debug version"
+
+task buildLibRelease(dependsOn: ['buildLibDebug'])
+buildLibRelease.group = GROUP_BUILD_TASKS
+buildLibRelease.description = "Build Scrolls library release version"
+
+build.mustRunAfter clean
+
+dependencies {
+    implementation "com.android.support:support-v4:$rootProject.ext.versionSupport"
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="mobi.lab.scrolls.sample"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:versionCode="1"
+          android:versionName="1.0-SNAPSHOT">
+
+    <application
+        android:name="mobi.lab.scrolls.sample.SampleApplication"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name">
+        <activity android:name="mobi.lab.scrolls.sample.HelloLogPostActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="mobi.lab.scrolls.activity.LogListActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="mobi.lab.scrolls.activity.LogReaderActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="mobi.lab.scrolls.activity.LogPostActivity"
+            android:process="mobi.lab.scrolls.sample.LogPostProcess"
+            android:theme="@style/AppTheme"/>
+
+        <!--The consuming application must define a file provider to support
+            sending logs as email attachments.
+
+            NOTE: ScrollsFileProvider should be used as the FileProvider impl.
+            NOTE2: Use the string defined here as authority when configurin LogPost impl -->
+        <provider
+            android:name="mobi.lab.scrolls.ScrollsFileProvider"
+            android:authorities="mobi.lab.scrolls.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+    </application>
+
+</manifest>
