@@ -23,6 +23,7 @@ buildscript {
 
 ext {
     versionName = "0.0.1"
+    publicVersionName = "0.0.1"
     versionCode = 1
     isRelease = false
 }
@@ -59,6 +60,7 @@ allprojects {
         // VersionName
         String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_TWEAK
         project.ext.versionName = baseVersionName + (isRelease ? ".b" : ".developmentbuild") + project.ext.versionCode
+        project.ext.publishVersionName = baseVersionName
 
         // This is a synonym
         project.version = project.ext.versionName

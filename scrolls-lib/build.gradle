@@ -3,9 +3,42 @@ buildscript {
         google()
         jcenter()
     }
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+ext {
+    bintrayRepo = 'mobi.lab.scrolls'
+    bintrayName = 'scrolls-android'
+
+    publishedGroupId = 'lab.mobi.scrolls'
+    libraryName = 'Scrolls Logging library.'
+    artifact = 'scrolls'
+
+    libraryDescription = 'Scrolls v2 library for Android. Allows file logging and log sharing via the system share action.'
+
+    siteUrl = 'https://github.com/MobiSolutions/scrolls-android'
+    gitUrl = 'https://github.com/MobiSolutions/scrolls-android.git'
+
+    libraryVersion = project.ext.publishVersionName
+
+    developerId = properties.getProperty("bintray_developer_id")
+    developerName = properties.getProperty("bintray_developer_name")
+    developerEmail = properties.getProperty("bintray_developer_email")
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://opensource.org/licenses/mit-license.php'
+    allLicenses = ["MIT"]
+}
 
 android {
     compileOptions {
@@ -21,8 +54,9 @@ android {
         versionCode project.ext.versionCode
         project.archivesBaseName = "scrolls-" + project.ext.versionName
 
-        println 'CONF: versionName is set to: ' + versionName
-        println 'CONF: versionCode is set to: ' + versionCode
+        println 'CONF: versionName is set to: ' + project.ext.versionName
+        println 'CONF: publishVersionName is set to: ' + project.ext.publishVersionName
+        println 'CONF: versionCode is set to: ' + project.ext.versionCode
         println 'CONF: is a release build: ' + project.ext.isRelease
     }
 }
@@ -63,3 +97,5 @@ build.mustRunAfter clean
 dependencies {
     implementation "com.android.support:support-v4:$rootProject.ext.versionSupport"
 }
+
+apply from: 'publish.gradle'

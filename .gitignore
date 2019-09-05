@@ -13,6 +13,7 @@ gen/
 .settings
 
 local.properties
+gradle.properties
 .gradle/
 
 scrolls-lib/*.iml
