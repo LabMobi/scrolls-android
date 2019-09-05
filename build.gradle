@@ -1,15 +1,15 @@
 /**
- * Major version component, incremented when the VERSION_FEATURE reaches to 10.
+ * Major version component.
  */
 final String VERSION_MAJOR = "2"
 /**
- * Feature version component, incremented when a feature is added. If it reaches 10 then it is set back to 0 and the VERSION_MAJOR is incremented by one.
+ * Feature version component.
  */
 final String VERSION_FEATURE = "0"
 /**
- * Tweak version component, incremented for smaller tweaks and bug fixes.
+ * Tweak version component.
  */
-final String VERSION_TWEAK = "4"
+final String VERSION_MINOR = "4"
 
 buildscript {
     repositories {
@@ -58,7 +58,7 @@ allprojects {
         }
 
         // VersionName
-        String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_TWEAK
+        String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_MINOR
         project.ext.versionName = baseVersionName + (isRelease ? ".b" : ".developmentbuild") + project.ext.versionCode
         project.ext.publishVersionName = baseVersionName
 
