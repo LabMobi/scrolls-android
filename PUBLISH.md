@@ -30,6 +30,10 @@ bintray_user=
 bintray_apiKey=
 # Your Bintray organization
 bintray_organization=mobilab #Use "Mobilab" to upload Scrolls
+# Should this be a test / dryrun or an actual publish.
+# dryRuns are good for testing
+# (Optional, false by default)
+bintray_dry_run=false
 ```
 
 2) Update the Scrolls library version from the `build.gradle` file in the project root folder:

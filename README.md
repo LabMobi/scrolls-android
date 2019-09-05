@@ -24,9 +24,9 @@ Look at the sample application:
 Look at the `<provider>` tag in sample application's `AndroidManifest.xml`. It also references `file_provider_paths.xml` for defining paths.
 The library keeps the logs in the internal files dir by default, so the `/` default path should be used. 
 
-##### LogPostImpl.configure changes
+##### `LogPostImpl.configure` changes
 
-LogPostImpl.configure call now expects a `fileProviderAuthority` String which is defined in the `<provider>` tag in the manifest.
+`LogPostImpl.configure` call now expects a `fileProviderAuthority` String which is defined in the `<provider>` tag in the manifest.
 
 This has to be unique across all applications. So most likely `applicationId + postfix`. For example `mobi.lab.scrollssample.logprovider`.
 
@@ -110,3 +110,7 @@ To build only the library use the command
 ```
 
 After the build the Scrolls library *.aar can be found under the `scrolls-android\scrolls-lib\build\outputs\aar` folder.
+
+### Publishing a new version of the library
+
+Please see `PUBLISH.md`.

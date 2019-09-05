@@ -56,11 +56,15 @@ artifacts {
 }
 
 Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+try {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+} catch (Exception ignored) {
+    println "Local.properties missing"
+}
 
 bintray {
     user = properties.getProperty("bintray_user")
-    key = properties.getProperty("bintray_apiKey")
+    key = properties.getProperty("bintray_api_key")
 
     configurations = ['archives']
     pkg {
@@ -71,7 +75,7 @@ bintray {
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = allLicenses
-        dryRun = false
+        dryRun = Boolean.parseBoolean(properties.getProperty("bintray_dry_run"))
         publish = true
         override = false
         publicDownloadNumbers = true
