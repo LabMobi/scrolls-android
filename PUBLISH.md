@@ -59,10 +59,18 @@ final String VERSION_MINOR = "0" // Update HERE!
 ./gradlew buildAllRelease
 ```
 
-4) Publish the Scrolls library to Bintray and JCenter:
+4) Publish the Scrolls library to Bintray and JCenter via:
 
 ```bash
 ./gradlew install bintrayUpload
 ```
+
+or using the custom target:
+
+```
+./gradlew buildAndPublishLibRelease
+```
+
+The latter will do both the release build and the publishing in one go.
 
 5) Open the Scrolls repository at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android and make sure the new version is visible and was published correctly

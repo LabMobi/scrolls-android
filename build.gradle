@@ -47,7 +47,7 @@ allprojects {
     buildscript {
         project.group = "mobi"
         // Yes yes, I am cheating here.
-        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease")
+        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildAndPublishLibRelease") || project.gradle.startParameter.taskNames.contains("buildLibRelease")
 
         String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
         // VersionCode

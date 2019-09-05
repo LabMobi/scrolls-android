@@ -96,7 +96,13 @@ task buildLibRelease(dependsOn: ['buildLibDebug'])
 buildLibRelease.group = GROUP_BUILD_TASKS
 buildLibRelease.description = "Build Scrolls library release version"
 
+task buildAndPublishLibRelease(dependsOn: ['buildLibRelease', 'install', 'bintrayUpload'])
+buildLibRelease.group = GROUP_BUILD_TASKS
+buildLibRelease.description = "Build Scrolls library release version and publish it"
+
 build.mustRunAfter clean
+
+buildAndPublishLibRelease.mustRunAfter buildLibRelease
 
 dependencies {
     implementation "com.android.support:support-v4:$rootProject.ext.versionSupport"
