@@ -14,7 +14,7 @@ DISCLAIMER: These instructions are for the full manual publishing flow. If possi
 
 WARNING: Publishing should only and always be done from the `master` branch!
 
-1) Create or update your `local.properties` file in the project root folder. Add the following properties and fill them with the correct values:
+1) Create or update (rename the "_TEMPLATE" file) your `publish.properties` file in the project root folder. Add the following properties and fill them with the correct values:
 
 ```properties
 # Your developer id

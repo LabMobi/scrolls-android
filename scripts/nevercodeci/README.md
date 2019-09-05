@@ -4,7 +4,7 @@ A helper script to run this build in the Nevercode CI (https://www.nevercode.io)
 
 ## Usage
 
-In order to execute the build in Nevercode the local.properties file must be correctly set up. The script handles this setup.
+In order to execute the build in Nevercode the `publish.properties` file must be correctly set up. The script handles this setup.
 
 The script must me added via Nevercode's *Environment* -> *Environment Files* section. All parameters need to be specified via *Environment Variables*. In Nevercode this can be done from *Environment* -> *Environment Variables* section.
 

@@ -29,7 +29,7 @@
 
 cd $LOCAL_BUILD_DIR
 
-echo "POST CLONE: Preparing local.properties"
+echo "POST CLONE: Preparing publish.properties"
 echo "POST CLONE: Configuration is as follows:"
 echo "POST CLONE: 	Nevercode build directory: $LOCAL_BUILD_DIR"
 echo "POST CLONE: 	Developer id: $LOCAL_DEVELOPER_ID"
@@ -80,27 +80,27 @@ fi
 cd $LOCAL_BUILD_DIR
 
 
-# Set the local.properties
-printf "\nbintray_developer_id=" >> local.properties
-printf "${LOCAL_DEVELOPER_ID}" >> local.properties
+# Set the publish.properties
+printf "\nbintray_developer_id=" >> publish.properties
+printf "${LOCAL_DEVELOPER_ID}" >> publish.properties
 
-printf "\nbintray_developer_name=" >> local.properties
-printf "${LOCAL_DEVELOPER_NAME}" >> local.properties
+printf "\nbintray_developer_name=" >> publish.properties
+printf "${LOCAL_DEVELOPER_NAME}" >> publish.properties
 
-printf "\nbintray_developer_email=" >> local.properties
-printf "${LOCAL_DEVELOPER_EMAIL}" >> local.properties
+printf "\nbintray_developer_email=" >> publish.properties
+printf "${LOCAL_DEVELOPER_EMAIL}" >> publish.properties
 
-printf "\nbintray_user=" >> local.properties
-printf "${LOCAL_DEVELOPER_BINTRAY_USER}" >> local.properties
+printf "\nbintray_user=" >> publish.properties
+printf "${LOCAL_DEVELOPER_BINTRAY_USER}" >> publish.properties
 
-printf "\nbintray_api_key=" >> local.properties
-printf "${LOCAL_DEVELOPER_BINTRAY_API_KEY}" >> local.properties
+printf "\nbintray_api_key=" >> publish.properties
+printf "${LOCAL_DEVELOPER_BINTRAY_API_KEY}" >> publish.properties
 
-printf "\nbintray_organization=" >> local.properties
-printf "${LOCAL_ORGANIZATION}" >> local.properties
+printf "\nbintray_organization=" >> publish.properties
+printf "${LOCAL_ORGANIZATION}" >> publish.properties
 
-printf "\nbintray_dry_run=" >> local.properties
-printf "${LOCAL_IS_DRY_RUN}" >> local.properties
+printf "\nbintray_dry_run=" >> publish.properties
+printf "${LOCAL_IS_DRY_RUN}" >> publish.properties
 
 
 echo "POST CLONE: We are done! Exiting."

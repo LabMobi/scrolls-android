@@ -15,9 +15,9 @@ apply plugin: 'com.jfrog.bintray'
 
 Properties properties = new Properties()
 try {
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    properties.load(project.rootProject.file('publish.properties').newDataInputStream())
 } catch (Exception ignored) {
-    println "Local.properties missing"
+    println "publish.properties missing"
 }
 
 ext {
