@@ -18,7 +18,15 @@ Note: Every time you notice something in this guide is out-of-date or incorrect 
 
 ## Release process
 
-1) Make sure the version code in the `dev` branch is correct. If needed then update the Scrolls library version from the `build.gradle` file in the project root folder:
+1) Update the `CHANGELOG.md` document on the `dev` branch, add a section for this new release. Commit and push the change:
+
+```bash
+git add CHANGELOG.md
+git commit -m "Added changelog for version X.Y.Z"
+git push
+```
+
+2) Make sure the version code in the `dev` branch is correct. If needed then update the Scrolls library version from the `build.gradle` file in the project root folder:
 
 ```groovy
 /**
@@ -67,7 +75,10 @@ git push
 
 7) Download the new version to some application and make sure it works as expected.
 
-Congratulations! You released a new version of Scrolls Logging Library.
+8) Create a new release tag in GitHub and link it from Bintray version page
+
+- Open up the GitHub release page at https://github.com/MobiSolutions/scrolls-android/releases, create a new release `vX.Y.Z`. 
+- Open up the Bintray version page at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android/X.Y.X, press `Edit`, pick the correct value (`vX.Y.Z`) from `Choose GitHub tag` , press `Update`.
 
 ## Post-release actions
 
