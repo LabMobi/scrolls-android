@@ -3,6 +3,7 @@ package mobi.lab.scrolls.sample;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import mobi.lab.scrolls.Log;
 import mobi.lab.scrolls.LogPost;
@@ -25,7 +26,11 @@ public class HelloLogPostActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        final String versionValue = getString(R.string.text_scrolls_version_x, Log.getVersion());
+        final TextView textVersion = findViewById(R.id.text_scrolls_version);
+        textVersion.setText(versionValue);
         log.d("onCreate");
+        log.i(versionValue);
         log.d("1 2 3");
         log.i("Info level log line here");
         log.d("Some common debug level logging ..");

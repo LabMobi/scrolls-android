@@ -22,9 +22,9 @@ public class LogDeleteImplAge extends LogDelete {
     private final long ageInMillis;
 
     /**
-     * Delete files older than ageInMillis
+     * Delete files older than ageInMillis.
      *
-     * @param ageInMillis
+     * @param ageInMillis age in milliseconds
      */
     public LogDeleteImplAge(final long ageInMillis) {
         this.ageInMillis = ageInMillis;
@@ -32,7 +32,7 @@ public class LogDeleteImplAge extends LogDelete {
 
     @Override
     protected File[] findFilesToDelete(final File logPath, final String currentLogFilename, final String prefix, final String extension) {
-        if (logPath == null || !logPath.exists() || !logPath.isDirectory() || ageInMillis < 0l) {
+        if (logPath == null || !logPath.exists() || !logPath.isDirectory() || ageInMillis < 0L) {
             // Something is wrong. Abort
             return null;
         }

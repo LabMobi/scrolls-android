@@ -9,7 +9,7 @@ import mobi.lab.scrolls.tools.LogHelper;
  * Harri Kirik, harri35@gmail.com
  */
 public abstract class LogDelete {
-    public static final long DELETE_START_DELAY = 987l; // millis
+    public static final long DELETE_START_DELAY = 987L; // millis
     protected static final boolean VERBOSE = true;
 
     /**

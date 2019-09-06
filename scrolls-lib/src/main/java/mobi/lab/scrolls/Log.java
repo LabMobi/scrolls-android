@@ -17,21 +17,25 @@ public abstract class Log {
     /**
      * All level of log lines (from ERROR to VERBOSE) are logged to output
      */
+    @SuppressWarnings("WeakerAccess")
     public static final int VERBOSITY_LOG_ALL = 6;
 
     /**
      * All level from ERROR to DEBUG logged to output
      */
+    @SuppressWarnings("WeakerAccess")
     public static final int VERBOSITY_LOG_DEBUG = 5;
 
     /**
      * All level from ERROR to INFO logged to output
      */
+    @SuppressWarnings("WeakerAccess")
     public static final int VERBOSITY_LOG_INFO = 4;
 
     /**
      * All level from ERROR to WARNINGS logged to output
      */
+    @SuppressWarnings("WeakerAccess")
     public static final int VERBOSITY_LOG_WARNINGS = 3;
 
     /**
@@ -42,17 +46,20 @@ public abstract class Log {
     /**
      * Only WTF levels are logged
      */
+    @SuppressWarnings("WeakerAccess")
     public static final int VERBOSITY_LOG_WTF = 1;
 
     /**
      * Nothing is logged, everything is discarded
      */
+    @SuppressWarnings("unused")
     public static final int VERBOSITY_LOG_NOTHING = 0;
 
     private static final String DEFAULT_TAG = "MobiLog";
     private static Class logImplementation = LogImplCat.class;
     private static int logVerbosity = VERBOSITY_LOG_ALL;
     private String tag = DEFAULT_TAG;
+    private final Object writeLock = new Object();
 
     protected Log() {
     }
@@ -64,7 +71,7 @@ public abstract class Log {
     /**
      * Get log instance
      *
-     * @param obj
+     * @param obj Object for the tag name
      * @return A new instance of the log implementation
      */
     public static Log getInstance(final Object obj) {
@@ -124,12 +131,13 @@ public abstract class Log {
      * VERBOSITY_LOG_ERRORS - log only error level stuff<br/>
      * VERBOSITY_LOG_NOTHING - turn off logs<br/>
      *
-     * @param verbosity
+     * @param verbosity verbosity level
      */
     public static void setVerbosity(final int verbosity) {
         logVerbosity = verbosity;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected final void setTag(final String tag) {
         this.tag = tag;
     }
@@ -144,7 +152,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             wtf(tag, o == null ? "null" : o.toString());
         }
     }
@@ -160,7 +168,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             if (tr != null) {
                 wtf(tag, o == null ? "null" : o.toString(), tr);
             } else {
@@ -175,6 +183,7 @@ public abstract class Log {
      * @param format Log content
      * @param args   Log content arguments
      */
+    @SuppressWarnings("unused")
     public final void wtf(final String format, final Object... args) {
         wtf(format(format, args));
     }
@@ -186,6 +195,7 @@ public abstract class Log {
      * @param args   Log content arguments
      * @param tr     Throwable to log
      */
+    @SuppressWarnings("unused")
     public final void wtf(final Throwable tr, final String format, final Object... args) {
         wtf(tr, format(format, args));
     }
@@ -200,7 +210,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             error(tag, o == null ? "null" : o.toString());
         }
     }
@@ -216,7 +226,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             if (tr != null) {
                 error(tag, o == null ? "null" : o.toString(), tr);
             } else {
@@ -256,7 +266,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             warning(tag, o == null ? "null" : o.toString());
         }
     }
@@ -266,12 +276,13 @@ public abstract class Log {
      *
      * @param o Log content
      */
+    @SuppressWarnings("WeakerAccess")
     public final void w(final Throwable tr, final Object o) {
         if (logVerbosity < VERBOSITY_LOG_WARNINGS) {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             if (tr != null) {
                 warning(tag, o == null ? "null" : o.toString(), tr);
             } else {
@@ -286,6 +297,7 @@ public abstract class Log {
      * @param format Log content
      * @param args   Log content arguments
      */
+    @SuppressWarnings("unused")
     public final void w(final String format, final Object... args) {
         w(format(format, args));
     }
@@ -297,6 +309,7 @@ public abstract class Log {
      * @param args   Log content arguments
      * @param tr     Throwable to log
      */
+    @SuppressWarnings("unused")
     public final void w(final Throwable tr, final String format, final Object... args) {
         w(tr, format(format, args));
     }
@@ -311,7 +324,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             debug(tag, o == null ? "null" : o.toString());
         }
     }
@@ -322,12 +335,13 @@ public abstract class Log {
      *
      * @param o Log content
      */
+    @SuppressWarnings("WeakerAccess")
     public final void d(final Throwable tr, final Object o) {
         if (logVerbosity < VERBOSITY_LOG_DEBUG) {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             if (tr != null) {
                 debug(tag, o == null ? "null" : o.toString(), tr);
             } else {
@@ -342,6 +356,7 @@ public abstract class Log {
      * @param format Log content
      * @param args   Log content arguments
      */
+    @SuppressWarnings("unused")
     public final void d(final String format, final Object... args) {
         d(format(format, args));
     }
@@ -353,6 +368,7 @@ public abstract class Log {
      * @param args   Log content arguments
      * @param tr     Throwable to log
      */
+    @SuppressWarnings("unused")
     public final void d(final Throwable tr, final String format, final Object... args) {
         d(tr, format(format, args));
     }
@@ -367,7 +383,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             info(tag, o == null ? "null" : o.toString());
         }
     }
@@ -382,7 +398,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             if (tr != null) {
                 info(tag, o == null ? "null" : o.toString(), tr);
             } else {
@@ -422,7 +438,7 @@ public abstract class Log {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             verbose(tag, o == null ? "null" : o.toString());
         }
     }
@@ -432,12 +448,13 @@ public abstract class Log {
      *
      * @param o Log content
      */
+    @SuppressWarnings("WeakerAccess")
     public final void v(final Throwable tr, final Object o) {
         if (logVerbosity < VERBOSITY_LOG_ALL) {
             return;
         }
 
-        synchronized (logImplementation) {
+        synchronized (writeLock) {
             if (tr != null) {
                 verbose(tag, o == null ? "null" : o.toString(), tr);
             } else {
@@ -452,6 +469,7 @@ public abstract class Log {
      * @param format Log content
      * @param args   Log content arguments
      */
+    @SuppressWarnings("unused")
     public final void v(final String format, final Object... args) {
         v(format(format, args));
     }
@@ -463,8 +481,18 @@ public abstract class Log {
      * @param args   Log content arguments
      * @param tr     Throwable to log
      */
+    @SuppressWarnings("unused")
     public final void v(final Throwable tr, final String format, final Object... args) {
         v(tr, format(format, args));
+    }
+
+    /**
+     * Get the Scrolls library version.
+     *
+     * @return Scrolls library version
+     */
+    public static String getVersion() {
+        return BuildConfig.VERSION_NAME;
     }
 
     private String format(final String format, final Object... args) {
@@ -475,7 +503,7 @@ public abstract class Log {
     }
 
     /**
-     * Override for scrolls to wtf level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to wtf level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -483,7 +511,7 @@ public abstract class Log {
     abstract protected void wtf(String tag, String msg);
 
     /**
-     * Override for scrolls to wtf level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to wtf level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -492,7 +520,7 @@ public abstract class Log {
     abstract protected void wtf(String tag, String msg, Throwable tr);
 
     /**
-     * Override for scrolls to error level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to error level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -500,7 +528,7 @@ public abstract class Log {
     abstract protected void error(String tag, String msg);
 
     /**
-     * Override for scrolls to error level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to error level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -509,7 +537,7 @@ public abstract class Log {
     abstract protected void error(String tag, String msg, Throwable tr);
 
     /**
-     * Override for scrolls to debug level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to debug level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -517,7 +545,7 @@ public abstract class Log {
     abstract protected void debug(String tag, String msg);
 
     /**
-     * Override for scrolls to debug level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to debug level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -527,7 +555,7 @@ public abstract class Log {
 
 
     /**
-     * Override for scrolls to warning level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to warning level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -535,7 +563,7 @@ public abstract class Log {
     abstract protected void warning(String tag, String msg);
 
     /**
-     * Override for scrolls to warning level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to warning level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -545,7 +573,7 @@ public abstract class Log {
 
 
     /**
-     * Override for scrolls to info level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to info level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -553,7 +581,7 @@ public abstract class Log {
     abstract protected void info(String tag, String msg);
 
     /**
-     * Override for scrolls to info level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to info level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -562,7 +590,7 @@ public abstract class Log {
     abstract protected void info(String tag, String msg, Throwable tr);
 
     /**
-     * Override for scrolls to verbose level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to verbose level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line
@@ -570,7 +598,7 @@ public abstract class Log {
     abstract protected void verbose(String tag, String msg);
 
     /**
-     * Override for scrolls to verbose level. This method is called by holding lock to object set with <code>setImplementation(Class)</code>
+     * Override for scrolls to verbose level.
      *
      * @param tag Tag of log line
      * @param msg Content of log line

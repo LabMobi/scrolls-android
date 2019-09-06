@@ -59,7 +59,9 @@ allprojects {
 
         // VersionName
         String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_MINOR
-        project.ext.versionName = baseVersionName + (isRelease ? ".b" : ".developmentbuild") + project.ext.versionCode
+        // This one we use internally and for artifact naming
+        project.ext.versionName = baseVersionName + (isRelease ? ".release_" : ".devbuild_") + project.ext.versionCode
+        // This one we use for publishing
         project.ext.publishVersionName = baseVersionName
 
         // This is a synonym

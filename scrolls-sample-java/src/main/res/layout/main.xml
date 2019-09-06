@@ -1,81 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-			xmlns:tools="http://schemas.android.com/tools"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:gravity="center_horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <View
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:layout_weight="1"/>
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:layout_weight="1" />
 
         <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/hello"
-                android:gravity="center"
-                android:layout_marginBottom="16dp"
-                />
+            android:id="@+id/text_scrolls_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="@string/text_scrolls_version_x" />
 
         <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_post_logs_with_activity"
-                android:onClick="postLogsWithActivity"
-                />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="postLogsWithActivity"
+            android:text="@string/btn_post_logs_with_activity" />
 
         <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_post_logs_from_logcat"
-                android:onClick="postLogsWithActivityFromLogcat"
-                />
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
-                android:text="@string/btn_view_logs"
-                android:onClick="viewLogs"
-                />
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_view_current_log"
-                android:onClick="viewCurrentLog"
-                />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="postLogsWithActivityFromLogcat"
+            android:text="@string/btn_post_logs_from_logcat" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
-            android:text="Crash the app!"
+            android:onClick="viewLogs"
+            android:text="@string/btn_view_logs" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="viewCurrentLog"
+            android:text="@string/btn_view_current_log" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dip"
             android:onClick="crashApp"
-			tools:ignore="OnClick"
-            />
+            android:text="Crash the app!"
+            tools:ignore="OnClick" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
-            android:text="Post a log with 4008 chars"
             android:onClick="logALongLine"
-            tools:ignore="OnClick"
-            />
+            android:text="Post a log with 4008 chars"
+            tools:ignore="OnClick" />
 
         <View
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:layout_weight="2"/>
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:layout_weight="2" />
     </LinearLayout>
 </ScrollView>
