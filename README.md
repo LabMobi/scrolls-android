@@ -1,8 +1,16 @@
 # Scrolls logging library
 
-A simple logging library that allows to use different log destinations, most importantly allows to log to a file. Also has tools to take care of file sharing, cleanup. Also to allows to browse log files in the integrating application itself. 
+Scrolls is a simple logging library that allows writing to a local file. 
 
-This library can be very easily used as s sub-Tree for Timber library, allowing easily configurable extended logging for debug versions.
+Features:
+
+- Specify one or multiple log destinations
+- Log to a local file
+- Browse log files and their content in an included viewer
+- Share the log files via the system share intent
+- Clean up old log files on a regular bases
+
+Scrolls is easily configurable and can be used in conjunction with other logging libraries, like for example as a sub-Tree of the Timber library.
 
 ## Getting started
 
@@ -13,7 +21,7 @@ This library can be very easily used as s sub-Tree for Timber library, allowing 
 ```groovy
 dependencies {
 // ..
-	implementation "lab.mobi.scrolls:scrolls:X:Y:Z"
+    implementation "lab.mobi.scrolls:scrolls:X:Y:Z"
 // ..
 }
 ```
@@ -134,13 +142,11 @@ builder.launchActivity(context);
 
 ```
 
-
-
 ## Building the library
 
 ### Build everything
 
-To build the library and the sample app use the command
+To build the library and the sample app use the following command
 
 ```groovy
 ./gradlew buildAllRelease
