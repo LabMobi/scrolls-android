@@ -4,7 +4,7 @@ The Scrolls Logging Library is currently published to both Bintray (see https://
 
 ## Publishing to Bintray and JCenter
 
-DISCLAIMER: These instructions are for the full manual publishing flow. If possible prefer to use the Scrolls build flow at Nevercode CI under Mobi Lab's account.
+DISCLAIMER: These instructions are for the full manual publishing flow. If possible prefer to use the Scrolls build flow at Nevercode CI under Mobi Lab's account. See `RELEASE_GUIDE.md` for more.
 
 ### Prerequisites
 
@@ -36,30 +36,13 @@ bintray_organization=mobilab #Use "Mobilab" to upload Scrolls
 bintray_dry_run=false
 ```
 
-2) Update the Scrolls library version from the `build.gradle` file in the project root folder:
-
-```groovy
-/**
- * Major version component.
- */
-final String VERSION_MAJOR = "0" // Update HERE!
-/**
- * Feature version component.
- */
-final String VERSION_FEATURE = "0" // Update HERE!
-/**
- * Tweak version component.
- */
-final String VERSION_MINOR = "0" // Update HERE!
-```
-
-3) Build the project and make sure everything works
+2) Build the project and make sure everything works
 
 ```bash
 ./gradlew buildAllRelease
 ```
 
-4) Publish the Scrolls library to Bintray and JCenter via:
+3) Publish the Scrolls library to Bintray and JCenter via:
 
 ```bash
 ./gradlew install bintrayUpload
@@ -73,4 +56,4 @@ or using the custom target:
 
 The latter will do both the release build and the publishing in one go.
 
-5) Open the Scrolls repository at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android and make sure the new version is visible and was published correctly
+4) Open the Scrolls repository at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android and make sure the new version is visible and was published correctly
