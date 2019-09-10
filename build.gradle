@@ -9,7 +9,7 @@ final String VERSION_FEATURE = "0"
 /**
  * Tweak version component.
  */
-final String VERSION_MINOR = "6"
+final String VERSION_MINOR = "7"
 
 buildscript {
     repositories {
