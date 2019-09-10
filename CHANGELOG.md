@@ -1,5 +1,12 @@
 # Changelog
 
+**Version 2.0.6**
+
+Date: 10.09.2019
+
+- Added an option to compress a log to zip file before posting it.
+- Cleaned up some Javadoc
+
 **Version 2.0.5**
 
 Date: 06.09.2019
