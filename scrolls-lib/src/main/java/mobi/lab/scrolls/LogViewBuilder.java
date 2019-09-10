@@ -21,6 +21,7 @@ public class LogViewBuilder {
     private boolean confirmPost;
     private boolean displayResult;
     private boolean highlightEnabled;
+    private boolean compressLogFile = false;
     private HashSet<String> tags;
 
     /**
@@ -85,8 +86,8 @@ public class LogViewBuilder {
      * If true: a confirmation dialog will be shown before posting the log (default)
      * If false: the log is posted without confirmation
      *
-     * @param confirmEnabled
-     * @return
+     * @param confirmEnabled Should the user confirm?
+     * @return LogViewBuilder
      */
     public LogViewBuilder setConfirmEnabled(boolean confirmEnabled) {
         this.confirmPost = confirmEnabled;
@@ -94,11 +95,24 @@ public class LogViewBuilder {
     }
 
     /**
+     * Should the log file be compressed before posting?
+     * Creates a new zip file with the same filename as the text file and with the ".zip" extension instead of ".txt" one.
+     *
+     * @param compress Should the log file be compressed before posting?
+     * @return LogPostBuilder
+     */
+    @SuppressWarnings("unused")
+    public LogViewBuilder setCompressLogFile(final boolean compress) {
+        this.compressLogFile = compress;
+        return this;
+    }
+
+    /**
      * If true: Log highlighting is enabled (default)
      * If false: Log highlighting is disabled
      *
-     * @param highlightEnabled
-     * @return
+     * @param highlightEnabled Should highlighting be enabled?
+     * @return LogViewBuilder
      */
     public LogViewBuilder setHighlightEnabled(boolean highlightEnabled) {
         this.highlightEnabled = highlightEnabled;
@@ -109,7 +123,7 @@ public class LogViewBuilder {
      * If true (default choice), a Toast with the post result is shown.
      *
      * @param showResultEnabled
-     * @return
+     * @return LogViewBuilder
      */
     public LogViewBuilder setShowResultEnabled(boolean showResultEnabled) {
         this.displayResult = showResultEnabled;
@@ -130,6 +144,7 @@ public class LogViewBuilder {
         intent.putExtra(SharedConstants.EXTRA_CONFIRM, confirmPost);
         intent.putExtra(SharedConstants.EXTRA_DISPLAY_RESULT, displayResult);
         intent.putExtra(SharedConstants.EXTRA_HIGHLIGHT_ENABLED, highlightEnabled);
+        intent.putExtra(SharedConstants.EXTRA_COMPRESS_LOG_FILE, compressLogFile);
         final String[] contents = new String[tags.size()];
         intent.putExtra(SharedConstants.EXTRA_POST_TAGS, tags.toArray(contents));
 
