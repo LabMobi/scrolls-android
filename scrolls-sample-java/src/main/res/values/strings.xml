@@ -2,9 +2,13 @@
 <resources>
     <string name="app_name">Scrolls Sample</string>
 	<string name="text_scrolls_version_x">Scrolls version %1$s</string>
-	<string name="btn_post_logs_with_activity">Post logs with activity</string>
+	<string name="btn_post_logs_from_file">Post logs from file</string>
+	<string name="btn_post_logs_from_file_zipped">Post logs from file zipped</string>
 	<string name="btn_post_logs_from_logcat">Post logs from Logcat</string>
 	<string name="btn_post_logs_with_service">Post logs with Service</string>
 	<string name="btn_view_logs">View logs</string>
     <string name="btn_view_current_log">View current log</string>
+	<string name="btn_crash_the_app">Crash the app!</string>
+	<string name="btn_post_long_line">Post a log with 4008 chars</string>
+	<string name="btn_switch_file_name">Start a new log file</string>
 </resources>

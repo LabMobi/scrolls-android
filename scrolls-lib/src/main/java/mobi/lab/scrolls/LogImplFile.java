@@ -1,9 +1,13 @@
 package mobi.lab.scrolls;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,19 +16,18 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import mobi.lab.scrolls.tools.LogHelper;
 
 /**
- * Log to a file on android private storage area.<br/>
- * You need to call init(File) (by giving a directory) to correctly start this implementation.<br/>
- * Log file name: [PREFIX]_Year_Month_Day_Hour_Minute_Second_Millisecond[EXTENSION]<br/>
+ * Log to a file on android private storage area.
+ * You need to call init(File) (by giving a directory) to correctly start this implementation.
+ * Log file name: [PREFIX]_Year_Month_Day_Hour_Minute_Second_Millisecond[EXTENSION_TEXT_LOG].
  *
- * @author madis
- * @author harri
- *         // TODO: An alternative init() where you can include the device info?
+ * @author Madis Pink, Harri Kirik
  */
 public class LogImplFile extends Log {
 
@@ -32,7 +35,9 @@ public class LogImplFile extends Log {
     public static final char LEVEL_MARKER_WARNING = 'W';
     public static final char LEVEL_MARKER_DEBUG = 'D';
     public static final char LEVEL_MARKER_INFO = 'I';
+    @SuppressWarnings("WeakerAccess")
     public static final char LEVEL_MARKER_WTF = 'A';
+    @SuppressWarnings("WeakerAccess")
     public static final char LEVEL_MARKER_VERBOSE = 'V';
 
     private static final int MSG_LOG_DEBUG = 0;
@@ -43,10 +48,12 @@ public class LogImplFile extends Log {
     private static final int MSG_LOG_VERBOSE = 5;
     private static final int MSG_LOG_WTF = 6;
     private static final int MSG_TASK_START_CLEANUP = 10;
-    private static final SimpleDateFormat fileNameDateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
-    private static final SimpleDateFormat logLineDateFormat = new SimpleDateFormat("HH:mm:ss.SSSZZZZZ");
+    private static final int MSG_TASK_STOP = 11;
+    private static final SimpleDateFormat fileNameDateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.US);
+    private static final SimpleDateFormat logLineDateFormat = new SimpleDateFormat("HH:mm:ss.SSSZZZZZ", Locale.US);
     private static final String PREFIX = "LOG_";
-    private static final String EXTENSION = ".txt";
+    private static final String EXTENSION_TEXT_LOG = ".txt";
+    private static final String EXTENSION_COMPRESSED_TEXT_LOG = ".zip";
     private static FileOutputStream os;
     private static PrintStream ps;
     private static LogHandlerThread logHandlerThread;
@@ -54,20 +61,23 @@ public class LogImplFile extends Log {
     private static String filename;
     private static boolean isInitDone;
     private static LogDelete cleaningStrategy;
+    private static final Object initLock = new Object();
 
     /**
-     * Default constructor, use Log.setImplementation(LogImplFile.class) followed by Log.getInstance(); or LogImplFile(final String tag) instead<br/>
+     * Default constructor, use Log.setImplementation(LogImplFile.class) followed by Log.getInstance(); or LogImplFile(final String tag) instead.
      * NB: You need to call the init() method first.
      */
+    @SuppressWarnings("unused")
     public LogImplFile() {
         super();
         initGuard();
     }
 
     /**
-     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplFile.class) followed by Log.getInstance()<br/>
+     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplFile.class) followed by Log.getInstance().
      * NB: You need to call the init() method first.
      */
+    @SuppressWarnings("unused")
     public LogImplFile(final String tag) {
         super(tag);
         initGuard();
@@ -84,47 +94,89 @@ public class LogImplFile extends Log {
      *
      * @param dir File object denoting a directory to write to log to
      */
-    public static void init(final File dir) {
+    @SuppressWarnings("WeakerAccess")
+    public static void init(@NonNull final File dir) {
         init(dir, null);
     }
 
 
-    public static void init(final File dir, final LogDelete strategy) {
-        isInitDone = false;
-        path = dir;
-        cleaningStrategy = strategy;
-        try {
-            // Start the HandlerThread
-            logHandlerThread = new LogHandlerThread();
-            // Open the FileOutputStream
-            filename = PREFIX + fileNameDateFormat.format(Calendar.getInstance().getTime()) + EXTENSION;
-            os = new FileOutputStream(new File(path, filename));
-            ps = new PrintStream(os, true);
-            // Create a log file header
-            logHandlerThread.sendMessage(MSG_LOG_HEADER, new LogMessage(null, "--- LOG device info: " + LogHelper.getDeviceInfo() + "; device time: " + LogHelper.getDateTimeString() + " ---\n"));
-            os.flush();
-            isInitDone = true;
-
-            // If we have a strategy for log cleanup then execute it now
-            if (cleaningStrategy != null) {
-                final LogMessage msg = new LogMessage(null, null);
-                msg.setDelay(LogDelete.DELETE_START_DELAY);
-                logHandlerThread.sendMessage(MSG_TASK_START_CLEANUP, msg);
-            }
-        } catch (IOException e) {
-            os = null;
+    public static void init(@NonNull final File dir, @Nullable final LogDelete strategy) {
+        synchronized (initLock) {
             isInitDone = false;
-            LogHelper.closeStream(os);
-            LogHelper.closeStream(ps);
-            throw new RuntimeException(e.getClass() + " " + e.getMessage());
-        }
+            path = dir;
+            cleaningStrategy = strategy;
+            try {
+                // Start the HandlerThread
+                logHandlerThread = new LogHandlerThread();
+                // Open the FileOutputStream
+                filename = PREFIX + fileNameDateFormat.format(Calendar.getInstance().getTime()) + EXTENSION_TEXT_LOG;
+                os = new FileOutputStream(new File(path, filename));
+                ps = new PrintStream(os, true);
+                // Create a log file header
+                logHandlerThread.sendMessage(MSG_LOG_HEADER, new LogMessage(null, "--- LOG device info: " + LogHelper.getDeviceInfo() + "; device time: " + LogHelper.getDateTimeString() + " ---\n"));
+                os.flush();
+                isInitDone = true;
 
+                // If we have a strategy for log cleanup then execute it now
+                if (cleaningStrategy != null) {
+                    final LogMessage msg = new LogMessage(null, null);
+                    msg.setDelay(LogDelete.DELETE_START_DELAY);
+                    logHandlerThread.sendMessage(MSG_TASK_START_CLEANUP, msg);
+                }
+            } catch (IOException e) {
+                isInitDone = false;
+                LogHelper.closeStream(os);
+                os = null;
+                LogHelper.closeStream(ps);
+                throw new RuntimeException(e.getClass() + " " + e.getMessage());
+            }
+        }
     }
 
     /**
-     * Is init() called yet or not
+     * The reverse of init.
+     * Destroys the impl and closes the streams.
+     * The init method needs to be called after this to use the impl again.
+     * A new file will be created.
+     */
+    @SuppressWarnings("WeakerAccess")
+    public static synchronized void destroy() {
+        synchronized (initLock) {
+            if (!isInitDone) {
+                return;
+            }
+            final LogMessage msg = new LogMessage(null, null);
+            logHandlerThread.sendMessage(MSG_TASK_STOP, msg);
+            isInitDone = false;
+            path = null;
+            logHandlerThread = null;
+            filename = null;
+            cleaningStrategy = null;
+            LogHelper.closeStream(os);
+            LogHelper.closeStream(ps);
+            os = null;
+            ps = null;
+        }
+    }
+
+    /**
+     * Closes the current file and does a new init and starts using a new file.
+     * WARNING: Some log lines may be lost while the library transitions from one impl to the next one.
+     */
+    public static void createNewFile() {
+        synchronized (initLock) {
+            initGuard();
+            final File currentPath = path;
+            final LogDelete currentCleaningStrategy = cleaningStrategy;
+            destroy();
+            init(currentPath, currentCleaningStrategy);
+        }
+    }
+
+    /**
+     * Is init() called yet or not.
      *
-     * @return
+     * @return is init done?
      */
     public static boolean isInitDone() {
         return isInitDone;
@@ -145,12 +197,16 @@ public class LogImplFile extends Log {
      * @return Log file extension used on all files
      */
     public static String getLogFileExtension() {
-        return EXTENSION;
+        return EXTENSION_TEXT_LOG;
+    }
+
+    public static String getCompressedLogFileExtension() {
+        return EXTENSION_COMPRESSED_TEXT_LOG;
     }
 
     /**
-     * Return current log file name.<br/>
-     * NB: will exist after init()
+     * Return current log file name. This does not include the path of the file. Path is available from {@link #getLogDir()}. Full file is returned from {@link #getLogFile()}.
+     * NB: will exist after init().
      *
      * @return Current log file name (or null)
      */
@@ -160,7 +216,22 @@ public class LogImplFile extends Log {
     }
 
     /**
-     * Return the directory used to store logs.<br/>
+     * Return the current log File.
+     * NB: Will exist after init()
+     *
+     * @return Current log File
+     */
+    @Nullable
+    public static File getLogFile() {
+        initGuard();
+        if (path == null || TextUtils.isEmpty(filename)) {
+            return null;
+        }
+        return new File(path, filename);
+    }
+
+    /**
+     * Return the directory used to store logs. Full file is returned from {@link #getLogFile()}.
      * NB: will exist after init(), same as given there.
      *
      * @return Directory used to store logs
@@ -186,15 +257,19 @@ public class LogImplFile extends Log {
 
     @Override
     protected void debug(final String tag, final String msg) {
-        if (logHandlerThread != null) {
-            logHandlerThread.sendMessage(MSG_LOG_DEBUG, new LogMessage(tag, msg));
+        synchronized (initLock) {
+            if (logHandlerThread != null) {
+                logHandlerThread.sendMessage(MSG_LOG_DEBUG, new LogMessage(tag, msg));
+            }
         }
     }
 
     @Override
     protected void debug(final String tag, final String msg, Throwable tr) {
-        if (logHandlerThread != null) {
-            logHandlerThread.sendMessage(MSG_LOG_DEBUG, new LogMessage(tag, msg, tr));
+        synchronized (initLock) {
+            if (logHandlerThread != null) {
+                logHandlerThread.sendMessage(MSG_LOG_DEBUG, new LogMessage(tag, msg, tr));
+            }
         }
     }
 
@@ -261,7 +336,7 @@ public class LogImplFile extends Log {
         /**
          * For messages that come before onLooperPrepared()
          */
-        private Queue<LogMessage> messageQueue = new LinkedBlockingQueue<LogMessage>();
+        private Queue<LogMessage> messageQueue = new LinkedBlockingQueue<>();
         /**
          * Handler for posting messages
          */
@@ -270,34 +345,32 @@ public class LogImplFile extends Log {
         /**
          * Create and start the thread
          */
-        public LogHandlerThread() {
+        LogHandlerThread() {
             super("LogHandlerThread");
             start();
         }
 
         private static void write(final char level, final String tag, final String msg) {
-            StringBuffer sb = new StringBuffer();
-            sb.append(createFormattedTimestamp());
-            sb.append(' ');
-            sb.append(level);
-            sb.append('/');
-            sb.append(tag);
-            sb.append(' ');
-            sb.append(msg);
-            sb.append('\n');
-            write(sb.toString());
+            String sb = createFormattedTimestamp() +
+                    ' ' +
+                    level +
+                    '/' +
+                    tag +
+                    ' ' +
+                    msg +
+                    '\n';
+            write(sb);
         }
 
         private static void write(final char level, final String tag, final String msg, final Throwable tr) {
             write(level, tag, msg);
-            StringBuffer sb = new StringBuffer();
-            sb.append(createFormattedTimestamp());
-            sb.append(' ');
-            sb.append(level);
-            sb.append('/');
-            sb.append(tag);
-            sb.append(' ');
-            write(sb.toString());
+            String sb = createFormattedTimestamp() +
+                    ' ' +
+                    level +
+                    '/' +
+                    tag +
+                    ' ';
+            write(sb);
             tr.printStackTrace(ps);
             write("\n");
         }
@@ -327,7 +400,8 @@ public class LogImplFile extends Log {
                 return;
             }
             try {
-                cleaningStrategy.execute(path, filename, PREFIX, EXTENSION);
+                cleaningStrategy.execute(path, filename, getLogFilePrefix(), getLogFileExtension());
+                cleaningStrategy.execute(path, filename, getLogFilePrefix(), getCompressedLogFileExtension());
             } catch (Exception e) {
                 write(LEVEL_MARKER_ERROR, "LogImplFile", "cleanup()", e);
                 // If something goes wrong then abandon the strategy
@@ -354,13 +428,13 @@ public class LogImplFile extends Log {
         /**
          * Send a log message
          *
-         * @param what
-         * @param message
+         * @param what    Command code
+         * @param message LogMessage
          */
-        public synchronized void sendMessage(final int what, final LogMessage message) {
+        synchronized void sendMessage(final int what, final LogMessage message) {
             if (mHandler != null) {
                 // Looper is prepared, safe to send the message directly
-                if (message.getDelay() < 0l) {
+                if (message.getDelay() < 0L) {
                     mHandler.sendMessage(android.os.Message.obtain(mHandler, what, message));
                 } else {
                     mHandler.sendMessageDelayed(android.os.Message.obtain(mHandler, what, message), message.getDelay());
@@ -382,6 +456,13 @@ public class LogImplFile extends Log {
             // Do we have a task?
             if (msg.what == MSG_TASK_START_CLEANUP) {
                 cleanup();
+                return false;
+            } else if (msg.what == MSG_TASK_STOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    mHandler.getLooper().quitSafely();
+                } else {
+                    mHandler.getLooper().quit();
+                }
                 return false;
             }
 
@@ -435,18 +516,18 @@ public class LogImplFile extends Log {
         private Throwable throwable;
         private long delay;
 
-        public LogMessage(final String tag, final String data) {
+        LogMessage(final String tag, final String data) {
             this(tag, data, null);
         }
 
-        public LogMessage(final String tag, final String data, final Throwable throwable) {
+        LogMessage(final String tag, final String data, final Throwable throwable) {
             this.tag = tag;
             this.data = data;
             this.throwable = throwable;
             this.what = -1;
         }
 
-        public String getTag() {
+        String getTag() {
             return tag;
         }
 
@@ -454,23 +535,23 @@ public class LogImplFile extends Log {
             return data;
         }
 
-        public Throwable getThrowable() {
+        Throwable getThrowable() {
             return throwable;
         }
 
-        public int getWhat() {
+        int getWhat() {
             return what;
         }
 
-        public void setWhat(final int what) {
+        void setWhat(final int what) {
             this.what = what;
         }
 
-        public long getDelay() {
+        long getDelay() {
             return delay;
         }
 
-        public void setDelay(long delay) {
+        void setDelay(@SuppressWarnings("SameParameterValue") long delay) {
             this.delay = delay;
         }
     }

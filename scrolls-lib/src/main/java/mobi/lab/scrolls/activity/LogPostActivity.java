@@ -7,31 +7,31 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.InputStream;
 
 import mobi.lab.scrolls.Log;
 import mobi.lab.scrolls.LogPost;
 import mobi.lab.scrolls.R;
 import mobi.lab.scrolls.data.LogFileActListener;
-import mobi.lab.scrolls.tools.LogHelper;
 import mobi.lab.scrolls.tools.SharedConstants;
 import mobi.lab.scrolls.view.ConfirmDialogLayout;
 
 /**
- * Activity for allowing user to post logs. If there is need to use this in case of app crashes the you should use run this in another process<br/>
+ * Activity for allowing user to post logs. If there is need to use this in case of app crashes the you should use run this in another process<br>
  * <p>
  * To make use of this you have to declare this in the Manifest: {@code <activity android:name="LogPostActivity" android:process="com.mobi.scrolls.android.activity.someOtherProcess" /> }
- * <br/>
+ * <br>
  * You'll also need {@code  <uses-permission android:name="android.permission.READ_LOGS" />} to post logcat logs
  */
 public class LogPostActivity extends Activity implements LogFileActListener, SharedConstants {
-    private static final String STATE_POST_PROCESS = "com.mobi.scrolls.android.STATE_POST_PROCESS";
+    private static final String STATE_POST_PROCESS = "mobi.lab.scrolls.STATE_POST_PROCESS";
+    private static final String TAG_POST_LOGS = "mobi.lab.scrolls.TAG_POST_LOGS";
 
     private static final int DIALOG_CONFIRM_LOG_POST = 2;
     private static final int DIALOG_RETRY_POST = 3;
@@ -39,6 +39,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
     private Log log;
     private boolean processStarted;
     private String[] tags;
+    private LogPost logPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,11 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
             return;
         }
 
+        logPost = (LogPost) getLastNonConfigurationInstance();
+        if (logPost != null) {
+            logPost.setListener(createLogPostListener());
+        }
+
         if (!processStarted) {
             processStarted = true;
             if (confirm) {
@@ -74,8 +80,21 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
                 showDialog(DIALOG_CONFIRM_LOG_POST);
             } else {
                 // Post the logs
-                startLogpost();
+                startLogPost();
             }
+        }
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return logPost;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (logPost != null) {
+            logPost.setListener(null);
         }
     }
 
@@ -96,15 +115,16 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
         }
     }
 
-    protected void startLogpost() {
-        startLogpost(new String[0]);
+    protected void startLogPost() {
+        startLogPost(new String[0]);
     }
 
-    protected void startLogpost(String[] tags) {
+    protected void startLogPost(String[] tags) {
         // // Let's assume no dialog bundles so get the extras again
         final Bundle extras = getIntent().getExtras();
         final String filename = extras.getString(EXTRA_LOG_FILE_PATH);
         final String[] extraTags = extras.getStringArray(EXTRA_POST_TAGS);
+        final boolean compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, false);
 
         String[] finalTags;
         if (tags.length > 0) {
@@ -114,40 +134,31 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
         } else {
             finalTags = extraTags;
         }
-
         String logType = extras.getString(EXTRA_LOGTYPE);
-        if (TextUtils.isEmpty(logType)) {
-            logType = LogPost.LOG_TYPE_MOBILE;
-        }
+
 
         // Post the logs
+        logPost = LogPost.getInstance();
+        logPost.setTags(finalTags);
+        logPost.setType(logType);
+        logPost.setCompressLogFile(compressLogFile);
+        logPost.post(getApplicationContext(), TAG_POST_LOGS, null, new File(filename), createLogPostListener());
+    }
 
-        try {
-            File attachment = null;
-            String message = null;
-            if (TextUtils.equals(logType, LogPost.LOG_TYPE_LOGCAT)) {
-                InputStream is = LogHelper.getLogcatStream(this, "time", "main", "V");
-                message = LogHelper.logcatStreamToString(is);
-            } else if (!TextUtils.isEmpty(filename)) {
-                attachment = new File(filename);
-            }
-
-            if (TextUtils.isEmpty(message) && (attachment == null)) {
-                // Fail on empty log
-                Toast.makeText(this, getString(R.string.failed_to_post_empty), Toast.LENGTH_LONG).show();
-                setResultAndFinish(RESULT_POST_FAILED);
-            } else {
-                LogPost logPost = LogPost.getInstance();
-                logPost.setTags(finalTags);
-                logPost.setType(logType);
-                logPost.post(getApplicationContext(), message, attachment);
+    private LogPost.LogPostListener createLogPostListener() {
+        return new LogPost.LogPostListener() {
+            @Override
+            public void onLogPostSuccess(@NonNull String postTag, String content, File attachment) {
+                logPost = null;
                 setResultAndFinish(RESULT_POST_SUCCESS);
             }
-        } catch (Exception ioe) {
-            log.e(ioe, "postLog(): file open failed");
-            Toast.makeText(LogPostActivity.this, getString(R.string.failed_to_post_generic), Toast.LENGTH_LONG).show();
-            setResultAndFinish(RESULT_POST_FAILED);
-        }
+
+            @Override
+            public void onLogPostFailed(@NonNull String postTag, @NonNull Throwable e) {
+                logPost = null;
+                setResultAndFinish(RESULT_POST_FAILED);
+            }
+        };
     }
 
     @Override
@@ -175,7 +186,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
                     public void onClick(DialogInterface dialog, int which) {
                         // Do the post
                         tags = layout.getTags(); //for retry dialog
-                        startLogpost(tags);
+                        startLogPost(tags);
                     }
                 });
                 // Return the dialog
@@ -196,7 +207,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do the post
-                        startLogpost(tags);
+                        startLogPost(tags);
                     }
                 });
                 return retryDialogBuilder.create();

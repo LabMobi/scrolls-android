@@ -29,8 +29,14 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="postLogsWithActivity"
-            android:text="@string/btn_post_logs_with_activity" />
+            android:onClick="postLogsFromFile"
+            android:text="@string/btn_post_logs_from_file" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="postLogsFromFileZipped"
+            android:text="@string/btn_post_logs_from_file_zipped" />
 
         <Button
             android:layout_width="wrap_content"
@@ -56,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
             android:onClick="crashApp"
-            android:text="Crash the app!"
+            android:text="@string/btn_crash_the_app"
             tools:ignore="OnClick" />
 
         <Button
@@ -64,8 +70,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
             android:onClick="logALongLine"
-            android:text="Post a log with 4008 chars"
+            android:text="@string/btn_post_long_line"
             tools:ignore="OnClick" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dip"
+            android:onClick="resetFileLog"
+            android:text="@string/btn_switch_file_name"
+            tools:ignore="OnClick" />
+
 
         <View
             android:layout_width="0px"

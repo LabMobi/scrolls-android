@@ -42,15 +42,15 @@ import mobi.lab.scrolls.tools.LogDeleteWorker;
 import mobi.lab.scrolls.tools.SharedConstants;
 
 /**
- * Activity to display the contents of a log file. Usually launched from LogListActivity.<br/>
- * Needs to get a path to log file from intent, use EXTRA_LOG_FILE_PATH<br/>.
- * PS: Posting logs needs the project info to be included in the intent bundle.<br/>
+ * Activity to display the contents of a log file. Usually launched from LogListActivity.<br>
+ * Needs to get a path to log file from intent, use EXTRA_LOG_FILE_PATH<br>.
+ * PS: Posting logs needs the project info to be included in the intent bundle.<br>
  * <p>
- * If you need to use this class directly then you need add the following components to Manifest:<br/>
+ * If you need to use this class directly then you need add the following components to Manifest:<br>
  * <p>
- * {@code <activity android:name="LogReaderActivity" />} <br/>
- * {@code <activity android:name="LogPostActivity" />} <br/>
- * <br/>
+ * {@code <activity android:name="LogReaderActivity" />} <br>
+ * {@code <activity android:name="LogPostActivity" />} <br>
+ * <br>
  * Posting logs also requires the following permission: {@code <uses-permission android:name="android.permission.INTERNET" />}
  *
  * @author harri
@@ -345,7 +345,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     }
 
     /**
-     * Method to format a log line.<br/>
+     * Method to format a log line.<br>
      */
     protected CharSequence formatLogLine(final CharSequence line, final char lastLineType) {
         if (TextUtils.isEmpty(line)) {

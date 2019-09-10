@@ -1,7 +1,6 @@
 package mobi.lab.scrolls;
 
 import java.io.File;
-import java.io.FilenameFilter;
 
 import mobi.lab.scrolls.tools.LogHelper;
 
@@ -10,15 +9,23 @@ import mobi.lab.scrolls.tools.LogHelper;
  * Harri Kirik, harri35@gmail.com
  */
 public class LogDeleteImplAge extends LogDelete {
-    public static final long AGE_KEEP_30_MINUTES = 30 * 60 * 1000l;
+    @SuppressWarnings("WeakerAccess")
+    public static final long AGE_KEEP_30_MINUTES = 30 * 60 * 1000L;
+    @SuppressWarnings("WeakerAccess")
     public static final long AGE_KEEP_1_HOUR = 2 * AGE_KEEP_30_MINUTES;
+    @SuppressWarnings("WeakerAccess")
     public static final long AGE_KEEP_12_HOURS = 12 * AGE_KEEP_1_HOUR;
+    @SuppressWarnings("WeakerAccess")
     public static final long AGE_KEEP_1_DAY = 2 * AGE_KEEP_12_HOURS;
     public static final long AGE_KEEP_3_DAYS = 3 * AGE_KEEP_1_DAY;
+    @SuppressWarnings("unused")
     public static final long AGE_KEEP_5_DAYS = 5 * AGE_KEEP_1_DAY;
+    @SuppressWarnings("unused")
     public static final long AGE_KEEP_7_DAYS = 7 * AGE_KEEP_1_DAY;
+    @SuppressWarnings("unused")
     public static final long AGE_KEEP_1_MONTH = 31 * AGE_KEEP_1_DAY;
-    public static final long AGE_KEEP_FOREVER = -1l;
+    @SuppressWarnings("unused")
+    public static final long AGE_KEEP_FOREVER = -1L;
     private final long ageInMillis;
 
     /**
@@ -39,31 +46,19 @@ public class LogDeleteImplAge extends LogDelete {
 
         final long currentTime = System.currentTimeMillis();
         // Find the files we want to delete
-        final File[] files = logPath.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                if (!LogHelper.isNotActiveLogFile(name, currentLogFilename, prefix, extension)) {
-                    // U Can't Touch This (hammertime)
-                    return false;
-                }
-                final File file = new File(dir, name);
-                if (file.isDirectory()) {
-                    return false;
-                }
-
-                // Seems we found a log file
-                final long fileAge = file.lastModified();
-                if ((currentTime - fileAge) <= ageInMillis) {
-                    // Not yet
-                    return false;
-                }
-
-                // We found a file to delete!
-                return true;
+        return logPath.listFiles((dir, name) -> {
+            if (!LogHelper.isALogFileButNotAnActiveOne(name, currentLogFilename, prefix, extension)) {
+                // U Can't Touch This (hammertime)
+                return false;
             }
+            final File file = new File(dir, name);
+            if (file.isDirectory()) {
+                return false;
+            }
+            // Seems we found a log file
+            final long fileAge = file.lastModified();
+            return (currentTime - fileAge) > ageInMillis;
         });
-
-        return files;
     }
 
 }

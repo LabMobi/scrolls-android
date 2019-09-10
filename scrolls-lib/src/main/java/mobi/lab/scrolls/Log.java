@@ -1,12 +1,12 @@
 package mobi.lab.scrolls;
 
 /**
- * Class for easy scrolls:)<br/>
- * Default implementation is LogImplSysout.class <br/>
- * Allows to:<br/>
- * 1) Log on info, debug, warning and error levels.<br/>
- * 2) Control the log verbosity so that logs can be easily limited in the release builds<br/>
- * 3) Set a platform specific implementation.<br/>
+ * Class for easy scrolls:)<br>
+ * Default implementation is LogImplSysout.class <br>
+ * Allows to:<br>
+ * 1) Log on info, debug, warning and error levels.<br>
+ * 2) Control the log verbosity so that logs can be easily limited in the release builds<br>
+ * 3) Set a platform specific implementation.<br>
  *
  * @author madis
  * @author ergo
@@ -126,10 +126,10 @@ public abstract class Log {
     }
 
     /**
-     * Set the verbosity level for the log<br/>
-     * VERBOSITY_LOG_ALL - log everything<br/>
-     * VERBOSITY_LOG_ERRORS - log only error level stuff<br/>
-     * VERBOSITY_LOG_NOTHING - turn off logs<br/>
+     * Set the verbosity level for the log<br>
+     * VERBOSITY_LOG_ALL - log everything<br>
+     * VERBOSITY_LOG_ERRORS - log only error level stuff<br>
+     * VERBOSITY_LOG_NOTHING - turn off logs<br>
      *
      * @param verbosity verbosity level
      */

@@ -18,8 +18,7 @@ public class SampleApplication extends Application {
         super.onCreate();
         if (BuildConfig.DEBUG) {
             /* Init Logging to go both to logcat and file when we have a debug build*/
-            LogImplFile.init(getFilesDir(), new LogDeleteImplAge(LogDeleteImplAge.AGE_KEEP_3_DAYS));
-            //LogImplFile.init(getFilesDir(), new LogDeleteImplCount(LogDeleteImplCount.COUNT_KEEP_ALL));
+            LogImplFile.init(getFilesDir(), new LogDeleteImplAge(LogDeleteImplAge.AGE_KEEP_30_MINUTES));
             LogImplComposite.init(new Class[]{LogImplCat.class, LogImplFile.class});
             Log.setImplementation(LogImplComposite.class);
 
@@ -48,24 +47,21 @@ public class SampleApplication extends Application {
         // exception to the default exception handler
         if (BuildConfig.DEBUG) {
             final Thread.UncaughtExceptionHandler defaultExceptionHandler = Thread.currentThread().getUncaughtExceptionHandler();
-            Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread thread, Throwable ex) {
+            Thread.currentThread().setUncaughtExceptionHandler((thread, ex) -> {
 
-                    // Log out the current exception
-                    log.e(ex, "FATAL ERROR!");
-                    // Start a new Log post with Activity
-                    // With the debug build we've also initated LogImplFile
-                    // If you want to use only LogImplCat, use LogPostBuilder(LogPost.LOG_TYPE_LOGCAT) constructor instead
-                    LogPostBuilder builder = new LogPostBuilder();
-                    builder.addTags(LogPost.LOG_TAG_CRASH)
-                            .setConfirmEnabled(true)
-                            .setShowResultEnabled(true)
-                            .launchActivity(getApplicationContext());
+                // Log out the current exception
+                log.e(ex, "FATAL ERROR!");
+                // Start a new Log post with Activity
+                // With the debug build we've also initiated LogImplFile
+                // If you want to use only LogImplCat, use LogPostBuilder(LogPost.LOG_TYPE_LOGCAT) constructor instead
+                LogPostBuilder builder = new LogPostBuilder();
+                builder.addTags(LogPost.LOG_TAG_CRASH)
+                        .setConfirmEnabled(true)
+                        .setShowResultEnabled(true)
+                        .launchActivity(getApplicationContext());
 
-                    // Call the system default handler
-                    defaultExceptionHandler.uncaughtException(thread, ex);
-                }
+                // Call the system default handler
+                defaultExceptionHandler.uncaughtException(thread, ex);
             });
 
             // the above statement is equivalent to:

@@ -1,26 +1,16 @@
 package mobi.lab.scrolls;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.io.File;
 
 /**
  * Version 2.0 (two-point-oh) of the LogPost class.
- * <p>
- * Has no default/dummy impl, you'll need to use an integration
- * library or roll your own.
  *
  * @author madis
- *         <p>
- *         Sample post:
- *         <p>
- *         ➜  bin
- *         <p>
- *         POST /groups/madis-pink-s-group--2/projects/1/postings.json,
- *         {"platform":"android","version":"1.0.0","secret":"c6CsRcOyx3Vqk6gbTIJr84Lg9LGgt6AqXS4yksS9GloqKxcK","metadata":{"random":"data"},"tags":[{"name":"crash"},{"name":"madis"}]} -H "Content-Type: application/json"
- *         {"id":320,"platform":"android","device_model":null,"device_id":null,"version":"1.0.0","revision":null,"metadata":{"random":"data"},"url":"http://localhost.madisp.com:3000/groups/madis-pink-s-group--2/projects/1/postings/320","tags":[{"id":1,"name":"crash"},{"id":3,"name":"madis"}]}
- *         <p>
- *         After that pull a PUT request to the returned URI with the raw file contents
  */
 public abstract class LogPost {
 
@@ -42,45 +32,33 @@ public abstract class LogPost {
      * Tag used for app crash
      */
     public static String LOG_TAG_CRASH = "crash";
-    /**
-     * Tag that can be used to denote an automatic post
-     */
-    public static String LOG_TAG_AUTOMATIC_POST = "autopost";
 
     /*
      * Optional fields
      */
     protected static String deviceModel;
-    protected static String deviceId;
     protected static String version;
     protected static String fileProviderAuthority;
     protected String type;
     protected String[] tags;
+    protected boolean compressLogFile;
+    protected LogPostListener listener;
 
     private static Class logPostImplementation;
 
     /**
      * Sets the device model string
      *
-     * @param deviceModel
+     * @param deviceModel device model
      */
     public static void setDeviceModel(String deviceModel) {
         LogPost.deviceModel = deviceModel;
     }
 
     /**
-     * Sets the unique device id
-     *
-     * @param deviceId
-     */
-    public static void setDeviceId(String deviceId) {
-        LogPost.deviceId = deviceId;
-    }
-
-    /**
      * Sets the application version
      *
-     * @param version
+     * @param version application version
      */
     public static void setVersion(String version) {
         LogPost.version = version;
@@ -89,7 +67,7 @@ public abstract class LogPost {
     /**
      * Sets the FileProvider authority used to create log file uris
      *
-     * @param authority
+     * @param authority File Provider Authority
      */
     public static void setFileProviderAuthority(String authority) {
         LogPost.fileProviderAuthority = authority;
@@ -99,7 +77,7 @@ public abstract class LogPost {
     /**
      * Sets the LogPost implementation for posting
      *
-     * @param clazz
+     * @param clazz Class
      */
     public static void setImplementation(Class clazz) {
         logPostImplementation = clazz;
@@ -115,8 +93,7 @@ public abstract class LogPost {
             logPostImplementation = LogPostImpl.class;
         }
         try {
-            final LogPost logPost = (LogPost) logPostImplementation.newInstance();
-            return logPost;
+            return (LogPost) logPostImplementation.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e.getClass() + " " + e.getMessage());
         } catch (IllegalAccessException e) {
@@ -125,29 +102,71 @@ public abstract class LogPost {
     }
 
     /**
-     * Sets the log type
+     * Sets the log type.
      *
-     * @param type
+     * @param type Log type
      */
     public void setType(String type) {
+        if (TextUtils.isEmpty(type)) {
+            type = LogPost.LOG_TYPE_MOBILE;
+        }
         this.type = type;
     }
+
 
     /**
      * Sets custom tags associated with the posted log
      *
-     * @param tags
+     * @param tags Tags
      */
     public void setTags(String[] tags) {
         this.tags = tags;
     }
 
     /**
-     * Post log data from InputStream
+     * Compress the log file.
      *
-     * @param content The string content to post. Most likely a logcat log
-     * @param attachment The file to post
-     * @return Null if post unsuccessful
+     * @param compressLogFile Should the log file be compressed?
      */
-    public abstract String post(Context context, String content, File attachment);
+    public void setCompressLogFile(boolean compressLogFile) {
+        this.compressLogFile = compressLogFile;
+    }
+
+    /**
+     * Set or update the listener.
+     *
+     * @param listener Listener
+     */
+    public void setListener(@Nullable LogPostListener listener) {
+        this.listener = listener;
+    }
+
+    /**
+     * Post log data.
+     *
+     * @param content     The string content to post.
+     * @param callbackTag Listener callback tag
+     * @param attachment  The file to post
+     * @param listener    Listener. Can be updated via {@link #setListener(LogPostListener)}.
+     */
+    public abstract void post(@NonNull Context context, @NonNull final String callbackTag, @Nullable String content, @Nullable File attachment, @Nullable LogPostListener listener);
+
+    public interface LogPostListener {
+        /**
+         * Log post was successful.
+         *
+         * @param postTag    Log post listener tag
+         * @param content    Content
+         * @param attachment attachment
+         */
+        void onLogPostSuccess(@NonNull String postTag, String content, File attachment);
+
+        /**
+         * Log post failed
+         *
+         * @param postTag Log post listener tag
+         * @param e       Error
+         */
+        void onLogPostFailed(@NonNull String postTag, @NonNull Throwable e);
+    }
 }

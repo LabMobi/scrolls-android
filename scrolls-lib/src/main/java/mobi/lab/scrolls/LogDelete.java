@@ -9,7 +9,9 @@ import mobi.lab.scrolls.tools.LogHelper;
  * Harri Kirik, harri35@gmail.com
  */
 public abstract class LogDelete {
+    @SuppressWarnings("WeakerAccess")
     public static final long DELETE_START_DELAY = 987L; // millis
+    @SuppressWarnings("WeakerAccess")
     protected static final boolean VERBOSE = true;
 
     /**
@@ -20,6 +22,7 @@ public abstract class LogDelete {
      * @param prefix             Prefix of log files
      * @param extension          The extension of log files
      */
+    @SuppressWarnings("WeakerAccess")
     public void execute(final File logPath, final String currentLogFilename, final String prefix, final String extension) {
         if (logPath == null || !logPath.exists() || !logPath.isDirectory()) {
             // Something is wrong. Abort
@@ -28,18 +31,18 @@ public abstract class LogDelete {
         final File[] files = findFilesToDelete(logPath, currentLogFilename, prefix, extension);
         if (files == null || files.length == 0) {
             if (VERBOSE) {
-                Log.getInstance(this).d("execute - no files found, done");
+                Log.getInstance(this).d("execute - no " + extension + " files found, done");
             }
             return;
         }
 
         if (VERBOSE) {
-            Log.getInstance(this).d("execute - deleting " + files.length + " files ..");
+            Log.getInstance(this).d("execute - deleting " + files.length + " " + extension + " files ..");
         }
 
         // Delete the files
-        for (int i = 0; i < files.length; i++) {
-            LogHelper.deleteFile(files[i], VERBOSE);
+        for (File file : files) {
+            LogHelper.deleteFile(file, VERBOSE);
         }
 
         if (VERBOSE) {

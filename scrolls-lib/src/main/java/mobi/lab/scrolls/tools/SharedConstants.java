@@ -28,13 +28,17 @@ public interface SharedConstants {
      */
     String EXTRA_LOGTYPE = "com.mobi.scrolls.android.EXTRA_LOGTYPE";
     /**
-     * If true, then user will be asked to confirm the logpost
+     * If true, then user will be asked to confirm the log post.
      */
     String EXTRA_CONFIRM = "com.mobi.scrolls.android.EXTRA_CONFIRM";
     /**
      * If true, then user will be notified about the result of the post by a TOAST message
      */
     String EXTRA_DISPLAY_RESULT = "com.mobi.scrolls.android.EXTRA_DISPLAY_RESULT";
+    /**
+     * If true, then the file will be compressed before posting it.
+     */
+    String EXTRA_COMPRESS_LOG_FILE = "com.mobi.scrolls.android.EXTRA_COMPRESS_LOG_FILE";
     /*
      *  * REQUEST CODES
      */

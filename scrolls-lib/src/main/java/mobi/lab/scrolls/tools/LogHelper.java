@@ -189,9 +189,9 @@ public class LogHelper {
     }
 
     /**
-     * Copy file from one location to another.<br/>
-     * NB: Do not call in the UI thread!<br/>
-     * NB: Make sure you have the correct rights!<br/>
+     * Copy file from one location to another.<br>
+     * NB: Do not call in the UI thread!<br>
+     * NB: Make sure you have the correct rights!<br>
      *
      * @param src Source file
      * @param dst Destination file
@@ -240,10 +240,10 @@ public class LogHelper {
     }
 
     /**
-     * Delete log files. <br/>
-     * Will not remove file named fileNameToKeep<br/>
-     * NB: Do not call in the UI thread!<br/>
-     * NB: Make sure you have the correct rights!<br/>
+     * Delete log files. <br>
+     * Will not remove file named fileNameToKeep<br>
+     * NB: Do not call in the UI thread!<br>
+     * NB: Make sure you have the correct rights!<br>
      *
      * @param logDir         Directory of logs files
      * @param logPrefix      Prefix to identify log files
@@ -255,10 +255,10 @@ public class LogHelper {
     }
 
     /**
-     * Delete log files. <br/>
-     * Will not remove file named fileNameToKeep<br/>
-     * NB: Do not call in the UI thread!<br/>
-     * NB: Make sure you have the correct rights!<br/>
+     * Delete log files. <br>
+     * Will not remove file named fileNameToKeep<br>
+     * NB: Do not call in the UI thread!<br>
+     * NB: Make sure you have the correct rights!<br>
      *
      * @param logDir         Directory of logs files
      * @param logPrefix      Prefix to identify log files
@@ -333,8 +333,8 @@ public class LogHelper {
     }
 
     /**
-     * Get an InputStream from LogCat logs.<br/>
-     * Needs a permission to read logs: {@code <uses-permission android:name="android.permission.READ_LOGS" />}<br/>
+     * Get an InputStream from LogCat logs.<br>
+     * Needs a permission to read logs: {@code <uses-permission android:name="android.permission.READ_LOGS" />}<br>
      *
      * @param context      Activity context
      * @param logcatFormat One of 'brief' 'process' 'tag' 'thread' 'raw' 'time' 'threadtime' 'long'
@@ -356,7 +356,7 @@ public class LogHelper {
     }
 
     /**
-     * Try to get a stream to the current file log<br/>
+     * Try to get a stream to the current file log<br>
      * NB: LogImplFile.class init() must have been called before using this
      *
      * @return FileInputStream or null
@@ -498,7 +498,7 @@ public class LogHelper {
         return TextUtils.isEmpty(str);
     }
 
-    public static boolean isNotActiveLogFile(final String name, final String currentLogFilename, final String prefix, final String extension) {
+    public static boolean isALogFileButNotAnActiveOne(final String name, final String currentLogFilename, final String prefix, final String extension) {
         return (!TextUtils.isEmpty(name) && !TextUtils.equals(currentLogFilename, name) && name.toLowerCase().startsWith(prefix.toLowerCase()) && name.toLowerCase().endsWith(extension.toLowerCase()));
     }
 }

@@ -21,7 +21,6 @@
             android:theme="@style/AppTheme"/>
         <activity
             android:name="mobi.lab.scrolls.activity.LogPostActivity"
-            android:process="mobi.lab.scrolls.sample.LogPostProcess"
             android:theme="@style/AppTheme"/>
 
         <!--The consuming application must define a file provider to support

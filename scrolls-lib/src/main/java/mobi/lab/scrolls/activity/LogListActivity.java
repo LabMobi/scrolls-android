@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -43,16 +42,16 @@ import mobi.lab.scrolls.tools.LogDeleteWorker;
 import mobi.lab.scrolls.tools.SharedConstants;
 
 /**
- * Activity that will display a list of log files and allows to:<br/>
- * 1. Open a log in LogReaderActivity<br/>
- * 2. Delete a log<br/>
- * 3. Post a log (needs to have project info for the post)<br/>
- * 4. Delete all logs except the current active one<br/>
+ * Activity that will display a list of log files and allows to:<br>
+ * 1. Open a log in LogReaderActivity<br>
+ * 2. Delete a log<br>
+ * 3. Post a log (needs to have project info for the post)<br>
+ * 4. Delete all logs except the current active one<br>
  * <p>
- * To use you need to add all the following component declarations to the manifest:<br/>
- * {@code <activity android:name="LogListActivity" />} <br/>
- * {@code <activity android:name="LogReaderActivity" />} <br/>
- * {@code <activity android:name="LogPostActivity" />} <br/>
+ * To use you need to add all the following component declarations to the manifest:<br>
+ * {@code <activity android:name="LogListActivity" />} <br>
+ * {@code <activity android:name="LogReaderActivity" />} <br>
+ * {@code <activity android:name="LogPostActivity" />} <br>
  * <p>
  * Posting logs also requires the following permission: {@code <uses-permission android:name="android.permission.INTERNET" /> }
  *
@@ -446,14 +445,8 @@ public class LogListActivity extends ListActivity implements SharedConstants {
                 }
                 try {
                     final File dir = new File(path);
-                    if (dir != null && dir.exists() && dir.isDirectory()) {
-                        final File[] fileList = dir.listFiles(new FilenameFilter() {
-
-                            @Override
-                            public boolean accept(File dir, String filename) {
-                                return (filename != null && filename.startsWith(LogImplFile.getLogFilePrefix()));
-                            }
-                        });
+                    if (dir.exists() && dir.isDirectory()) {
+                        final File[] fileList = dir.listFiles((dir1, filename) -> (filename != null && filename.startsWith(LogImplFile.getLogFilePrefix()) && filename.endsWith(LogImplFile.getLogFileExtension())));
 
                         // Sort the list please
                         Arrays.sort(fileList);

@@ -1,9 +1,7 @@
 package mobi.lab.scrolls;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
-import java.util.Comparator;
 
 import mobi.lab.scrolls.tools.LogHelper;
 
@@ -11,16 +9,20 @@ import mobi.lab.scrolls.tools.LogHelper;
  * Log delete strategy by keeping only last N files
  * Harri Kirik, harri35@gmail.com
  */
+@SuppressWarnings("unused")
 public class LogDeleteImplCount extends LogDelete {
+    @SuppressWarnings("unused")
     public static final int COUNT_KEEP_ALL = -1;
+    @SuppressWarnings("unused")
     public static final int COUNT_KEEP_ACTIVE = 0;
     private int count;
 
     /**
      * Keeps N files in addition to the current active log file
      *
-     * @param count
+     * @param count Amount of files to keep.
      */
+    @SuppressWarnings("unused")
     public LogDeleteImplCount(final int count) {
         this.count = count;
     }
@@ -33,12 +35,7 @@ public class LogDeleteImplCount extends LogDelete {
         }
 
         // Get a list of log files
-        final File[] logFiles = logPath.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return LogHelper.isNotActiveLogFile(name, currentLogFilename, prefix, extension);
-            }
-        });
+        final File[] logFiles = logPath.listFiles((dir, name) -> LogHelper.isALogFileButNotAnActiveOne(name, currentLogFilename, prefix, extension));
 
         // Did we get something?
         if (logFiles == null || logFiles.length <= count) {
@@ -47,23 +44,17 @@ public class LogDeleteImplCount extends LogDelete {
         }
 
         // Sort by date modified
-        Arrays.sort(logFiles, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                if (o1.lastModified() == o2.lastModified()) {
-                    return 0;
-                }
-                // Age before beauty
-                return o1.lastModified() < o2.lastModified() ? -1 : 1;
+        Arrays.sort(logFiles, (o1, o2) -> {
+            if (o1.lastModified() == o2.lastModified()) {
+                return 0;
             }
+            // Age before beauty
+            return o1.lastModified() < o2.lastModified() ? -1 : 1;
         });
 
         // Remember and return the files we do not need
         final File[] filesToDelete = new File[logFiles.length - count];
-        for (int i = 0; i < filesToDelete.length; i++) {
-            filesToDelete[i] = logFiles[i];
-        }
-
+        System.arraycopy(logFiles, 0, filesToDelete, 0, filesToDelete.length);
         return filesToDelete;
     }
 }

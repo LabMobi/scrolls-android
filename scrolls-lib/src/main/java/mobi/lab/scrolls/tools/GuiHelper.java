@@ -56,7 +56,7 @@ public class GuiHelper {
     }
 
     /**
-     * Set the ProgressIndicator visibility.<br/>
+     * Set the ProgressIndicator visibility.<br>
      * PS: Be sure to use GuiHelper.createAndAddProgressIndicator first
      */
     public static void setProgressIndicatorVisibility(final Activity activity, final boolean isVisible) {

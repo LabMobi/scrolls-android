@@ -1,10 +1,10 @@
 package mobi.lab.scrolls;
 
 /**
- * Log wrapper that allows to use more than one log implementation at a time.<br/>
- * Specify the actual implementations used in the init() method.<br/>
+ * Log wrapper that allows to use more than one log implementation at a time.<br>
+ * Specify the actual implementations used in the init() method.<br>
  * <p>
- * NB: Must call init() before creating an instance or a RuntimeException will be thrown<br/>
+ * NB: Must call init() before creating an instance or a RuntimeException will be thrown<br>
  *
  * @author harri
  */
@@ -13,7 +13,7 @@ public class LogImplComposite extends Log {
     private static boolean isInitDone;
 
     /**
-     * Default constructor, use Log.setImplementation(LogImplComposite.class) followed by Log.getInstance(); or LogImplComposite(final String tag) instead<br/>
+     * Default constructor, use Log.setImplementation(LogImplComposite.class) followed by Log.getInstance(); or LogImplComposite(final String tag) instead<br>
      * NB: You need to call the init() method first.
      */
     public LogImplComposite() {
@@ -24,7 +24,7 @@ public class LogImplComposite extends Log {
     }
 
     /**
-     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplComposite.class) followed by Log.getInstance()<br/>
+     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplComposite.class) followed by Log.getInstance()<br>
      * NB: You need to call the init() method first.
      */
     public LogImplComposite(final String tag) {
@@ -35,7 +35,7 @@ public class LogImplComposite extends Log {
     }
 
     /**
-     * Init the composite logs by giving an non-empty array of log implementations to use.<br/>
+     * Init the composite logs by giving an non-empty array of log implementations to use.<br>
      * NB: Instances are created from these classes and you should call init() on them first if needed.
      *
      * @param logClasses Array of log implementations to use

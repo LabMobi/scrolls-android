@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Simple Log implementation that logs to Android LogCat.<br/>
+ * Simple Log implementation that logs to Android LogCat.<br>
  * Doesn't need init().
  *
  * @author harri
@@ -17,14 +17,14 @@ public class LogImplCat extends Log {
     public static boolean tagOnlyClass = true;
 
     /**
-     * Default constructor, use Log.setImplementation(LogImplCat.class) followed by Log.getInstance(); or LogImplCat(final String tag) instead<br/>
+     * Default constructor, use Log.setImplementation(LogImplCat.class) followed by Log.getInstance(); or LogImplCat(final String tag) instead<br>
      */
     public LogImplCat() {
         super();
     }
 
     /**
-     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplCat.class) followed by Log.getInstance()<br/>
+     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplCat.class) followed by Log.getInstance()<br>
      */
     public LogImplCat(final String tag) {
         super(tag);

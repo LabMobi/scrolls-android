@@ -15,9 +15,10 @@ import mobi.lab.scrolls.activity.LogPostActivity;
  */
 public class LogPostBuilder {
     private File file = null;
-    private Set<String> tags = new HashSet<String>();
+    private Set<String> tags = new HashSet<>();
     private boolean confirmPost = true;
     private boolean displayResult = true;
+    private boolean compressLogFile = false;
     private String logType = LogPost.LOG_TYPE_MOBILE;
 
     /**
@@ -30,7 +31,7 @@ public class LogPostBuilder {
     /**
      * Constructor, sets the logType used for log posting.
      *
-     * @param logTypeConst
+     * @param logTypeConst Log type
      * @see LogPost#LOG_TYPE_MOBILE
      * @see LogPost#LOG_TYPE_LOGCAT
      */
@@ -42,7 +43,7 @@ public class LogPostBuilder {
      * Sets the log file.
      *
      * @param f Log file
-     * @return
+     * @return LogPostBuilder
      */
     public LogPostBuilder setFile(File f) {
         this.file = f;
@@ -52,8 +53,8 @@ public class LogPostBuilder {
     /**
      * Adds custom tags to the log
      *
-     * @param tags
-     * @return
+     * @param tags Tags
+     * @return LogPostBuilder
      */
     public LogPostBuilder addTags(String... tags) {
         if (tags != null && tags.length > 0) {
@@ -68,8 +69,8 @@ public class LogPostBuilder {
      * If true: a confirmation dialog will be shown before posting the log
      * If false: the log is posted without confirmation
      *
-     * @param confirmEnabled
-     * @return
+     * @param confirmEnabled Show a confirmation dialog
+     * @return LogPostBuilder
      */
     public LogPostBuilder setConfirmEnabled(boolean confirmEnabled) {
         this.confirmPost = confirmEnabled;
@@ -79,8 +80,8 @@ public class LogPostBuilder {
     /**
      * If true, a Toast with the post result is shown.
      *
-     * @param showResultEnabled
-     * @return
+     * @param showResultEnabled Show post results
+     * @return LogPostBuilder
      */
     public LogPostBuilder setShowResultEnabled(boolean showResultEnabled) {
         this.displayResult = showResultEnabled;
@@ -90,11 +91,12 @@ public class LogPostBuilder {
     /**
      * Sets the log's type.
      *
-     * @param logTypeConst
-     * @return
+     * @param logTypeConst log type
+     * @return LogPostBuilder
      * @see LogPost#LOG_TYPE_MOBILE
      * @see LogPost#LOG_TYPE_LOGCAT
      */
+    @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public LogPostBuilder setLogType(final String logTypeConst) {
         this.logType = logTypeConst;
         if (LogPost.LOG_TYPE_MOBILE.equals(logTypeConst)) {
@@ -104,17 +106,31 @@ public class LogPostBuilder {
     }
 
     /**
+     * Should the log file be compressed before posting?
+     * Creates a new zip file with the same filename as the text file and with the ".zip" extension instead of ".txt" one.
+     *
+     * @param compress Should the log file be compressed before posting?
+     * @return LogPostBuilder
+     */
+    @SuppressWarnings("unused")
+    public LogPostBuilder setCompressLogFile(final boolean compress) {
+        this.compressLogFile = compress;
+        return this;
+    }
+
+    /**
      * Launches {@link LogPostActivity} in a new task to post the log.
      *
-     * @param context
+     * @param context Context
      */
     public void launchActivity(Context context) {
         Intent intent = new Intent(context, LogPostActivity.class);
         intent.putExtra(LogPostActivity.EXTRA_LOG_FILE_PATH, getLogFilesPath());
-        intent.putExtra(LogPostActivity.EXTRA_POST_TAGS, tags.toArray(new String[tags.size()]));
+        intent.putExtra(LogPostActivity.EXTRA_POST_TAGS, tags.toArray(new String[0]));
         intent.putExtra(LogPostActivity.EXTRA_CONFIRM, confirmPost);
         intent.putExtra(LogPostActivity.EXTRA_LOGTYPE, logType);
         intent.putExtra(LogPostActivity.EXTRA_DISPLAY_RESULT, displayResult);
+        intent.putExtra(LogPostActivity.EXTRA_COMPRESS_LOG_FILE, compressLogFile);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

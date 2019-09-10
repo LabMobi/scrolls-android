@@ -472,7 +472,7 @@ public class LogImplBofh extends Log {
     Random rnd;
 
     /**
-     * Default constructor, use Log.setImplementation(LogImplBofh.class) followed by Log.getInstance(); or LogImplBofh(final String tag) instead<br/>
+     * Default constructor, use Log.setImplementation(LogImplBofh.class) followed by Log.getInstance(); or LogImplBofh(final String tag) instead<br>
      */
     public LogImplBofh() {
         super();
@@ -480,7 +480,7 @@ public class LogImplBofh extends Log {
     }
 
     /**
-     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplBofh.class) followed by Log.getInstance()<br/>
+     * Preferred constructor to use in case you need to manually create an instance of this class. Prefer to use Log.setImplementation(LogImplBofh.class) followed by Log.getInstance()<br>
      */
     public LogImplBofh(final String tag) {
         super(tag);
