@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import java.io.File;
 import java.io.InputStream;
 
+import mobi.lab.scrolls.tools.FileCompressor;
 import mobi.lab.scrolls.tools.LogHelper;
 import mobi.lab.scrolls.tools.Util;
 
@@ -63,12 +64,12 @@ public class LogPostImpl extends LogPost {
     }
 
     private File compressAttachmentIfNeeded(File originalAttachment) {
-        if (!compressLogFile) {
+        if (!compressLogFile || originalAttachment == null) {
             return originalAttachment;
         }
-        final File compressedFile = new File(originalAttachment.getParentFile(), originalAttachment.getName().replaceFirst("[.][^.]+$", "") + ".zip");
-        Util.compressFiles(new File[]{originalAttachment}, compressedFile);
-        return compressedFile;
+        final File targetFile = FileCompressor.createCompressedFileCandidateFromUncompressedFilePath(originalAttachment);
+        final boolean success = FileCompressor.compressFiles(new File[]{originalAttachment}, targetFile);
+        return success ? targetFile : originalAttachment;
     }
 
     private Uri createUriIfNeeded(@NonNull Context context, @Nullable File attachment) {

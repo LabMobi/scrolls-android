@@ -1,5 +1,12 @@
 # Changelog
 
+**Version 2.0.7**
+
+Date: 11.09.2019
+
+- Made the file compression logic usable separately via the FileCompressor class.
+- Bug fixes - LogViewBuilder now also supports the log file compression parameter.
+
 **Version 2.0.6**
 
 Date: 10.09.2019
