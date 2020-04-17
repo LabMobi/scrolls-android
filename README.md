@@ -8,6 +8,7 @@ Features:
 - Log to a local file
 - Browse log files and their content in an included viewer
 - Share the log files via the system share intent
+- Compress log files into a zip before sharing to reduce the transfer time and size
 - Clean up old log files on a regular bases
 
 Scrolls is easily configurable and can be used in conjunction with other logging libraries, like for example as a sub-Tree of the Timber library.
@@ -28,7 +29,7 @@ dependencies {
 
 Replace the "X.Y.Z" part with the latest version of the library, available versions are visible at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android.
 
-2) Update you application manifest, add the provider:
+2) Update you application manifest, add Activity and Provider declarations:
 
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -96,6 +97,17 @@ log.d("This is a debug message.");
 log.w("This is a warning message.");
 log.e("This is an error message.");
 log.wtf("This is an assert message.");
+
+// You can also log Throwable objects
+try {
+   throw new IOException("1 2 3 test"); 
+} catch(IOException e) {
+    log.e(e, "This is an error message with a stack trace.");
+}
+
+// And you can use String.format style arguments
+log.d("This is a debug line about a user %s %s.", "Cheradenine", "Zakalwe");
+
 /*
  * 2. In case you want to use more than one log implementation at a time you can use LogImplComposite class.
  * Some log implementations need you to call init() on them first before usage.
