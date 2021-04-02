@@ -12,12 +12,13 @@ final String VERSION_FEATURE = "0"
 final String VERSION_MINOR = "8"
 
 buildscript {
+    ext.gradle_plugin_version = '4.2.0-beta06'
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath "com.android.tools.build:gradle:$gradle_plugin_version"
     }
 }
 
@@ -36,7 +37,7 @@ allprojects {
 
         // Tool versions
         versionCompileSdk = 28
-        versionBuildTools = '28.0.3'
+        versionBuildTools = '30.0.2'
         versionMinSdkVersion = 16
         versionTargetSdk = 28
 
@@ -79,6 +80,5 @@ allprojects {
             dirs 'libs'
         }
         mavenCentral()
-        jcenter()
     }
 }

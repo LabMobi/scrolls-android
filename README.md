@@ -22,10 +22,22 @@ Scrolls is easily configurable and can be used in conjunction with other logging
 ```groovy
 dependencies {
 // ..
-    implementation "lab.mobi.scrolls:scrolls:X:Y:Z"
+    implementation "mobi.lab.scrolls:scrolls:X.Y.Z"
 // ..
 }
 ```
+
+The artifact is available in Maven Central
+
+```groovy
+repositories {
+...
+    mavenCentral()
+...
+}
+```
+
+NOTE: Before the Scrolls moved to Maven Central it used to have a different group id -  "lab.mobi.scrolls". If you are migrating from there then be sure to update the group id!
 
 Replace the "X.Y.Z" part with the latest version of the library, available versions are visible at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android.
 
@@ -71,6 +83,18 @@ Replace the "X.Y.Z" part with the latest version of the library, available versi
 Notes:
 * `LogListActivity` creates a new `Log` launcher icon to show logs
 * `@style/AppTheme` styles the activities to better match the consuming application
+
+### Solving issues
+
+Scrolls for now is not yet moved to AndroidX. If you include it to a brand new project then you may get a compile error about conflicting pre- and post-AndroidX dependencies. To solve this make sure Jetifier is turned on from `gradle.properties`:
+
+```properties
+android.useAndroidX=true
+# ..
+android.enableJetifier=true
+```
+
+
 
 ## Usage
 

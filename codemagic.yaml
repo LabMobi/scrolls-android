@@ -1,0 +1,93 @@
+# Has a separate flows for develop branch (automatic builds),
+# Merge Request (automatic builds) and master branch Release builds (manual builds) and Publishing builds (manual builds).
+definitions:
+  artifacts: &androidArtifacts # Section def
+    - emulator.log
+    - scrolls-lib/build/reports
+    - scrolls-lib/build/outputs/androidTest-results
+    - scrolls-lib/build/outputs/logs
+    - scrolls-lib/build/outputs/aar/*.aar
+    - scrolls-sample-java/build/outputs/apk/**/*.apk
+  debug-emails: &debugEmails
+    - harri.kirik@lab.mobi
+  release-emails: &releaseEmails
+    - harri.kirik@lab.mobi
+  scripts:
+    # Local setup
+    - &stepLocalSetup
+      name: Set up local properties and permissons
+      script: |
+        chmod +x gradlew
+        echo "sdk.dir=$HOME/programs/android-sdk-macosx" > "$FCI_BUILD_DIR/local.properties"
+    # Build DEBUG
+    - &stepBuildDebug
+      name: Build Debug
+      script: ./gradlew buildAllDebug
+    # Build RELEASE
+    - &stepBuildRelease
+      name: Build Release
+      script: ./gradlew buildAllRelease
+    # Build PUBLISH
+    - &stepBuildPublish
+      name: Build Release and Publish
+      script: ./gradlew buildAndPublishLibRelease
+
+# Flows
+workflows:
+  release-builds:
+    name: Release builds (master branch only)
+    scripts:
+      - name: Check 'master' branch
+        script: if [ "$FCI_BRANCH" != "master" ]; then exit 1; fi
+      - *stepLocalSetup
+      - *stepBuildRelease
+    publishing:
+      email:
+        recipients: *releaseEmails
+    artifacts: *androidArtifacts
+  publish-builds:
+    name: Release and publish builds (master branch only)
+    scripts:
+      - name: Check 'master' branch
+        script: if [ "$FCI_BRANCH" != "master" ]; then exit 1; fi
+      - *stepLocalSetup
+      - *stepBuildPublish
+    publishing:
+      email:
+        recipients: *releaseEmails
+    artifacts: *androidArtifacts
+  develop-builds:
+    name: Dev builds
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: 'develop'
+          include: true
+          source: true
+    scripts:
+      - *stepLocalSetup
+      - *stepBuildDebug
+    artifacts: *androidArtifacts
+    publishing:
+      email:
+        recipients: *debugEmails
+  merge-requests:
+    name: Merge requests
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: 'develop'
+          include: true
+          source: false
+      cancel_previous_builds: true
+    scripts:
+      - *stepLocalSetup
+      - *stepBuildDebug
+    publishing:
+      email:
+        recipients: *debugEmails
+        notify:
+          success: false
