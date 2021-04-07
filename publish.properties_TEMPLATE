@@ -1,17 +1,21 @@
 ## This file must *NOT* be checked into Version Control Systems,
 # as it contains information specific to your local configuration.
-# Your developer id
-bintray_developer_id=
+
+For more information see the RELEASE_GUIDE.md and https://confluence.lab.mobi/display/DEV/Sonatype+Maven+Access+Credentials
+
 # Your developer name
-bintray_developer_name=
+publish_developer_name=<FILL>
 # Your developer email
-bintray_developer_email=
-# Your bintray username
-bintray_user=
-# Your bintray API key
-bintray_api_key=
-# Your bintray organization
-bintray_organization=mobilab
-# Should this be a test / dryrun or an actual publish?
-# (Optional, false by default)
-bintray_dry_run=false
+publish_developer_email=<FILL>
+# Your developer organization
+publish_developer_organization=<FILL>
+# Your developer organization URL
+publish_developer_organization_url=<FILL>
+# Signing key
+signing_key=<FILL>
+# Signing key password
+signing_password=<FILL>
+# OSSRH (https://s01.oss.sonatype.org) account username
+publish_ossrh_username=<FILL>
+# OSSRH account password
+publish_ossrh_password=<FILL>

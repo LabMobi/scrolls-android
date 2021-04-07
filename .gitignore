@@ -18,3 +18,5 @@ gradle.properties
 
 scrolls-lib/*.iml
 scrolls-sample/*.iml
+
+publish.properties

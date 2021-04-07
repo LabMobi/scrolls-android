@@ -1,45 +1,13 @@
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'com.android.library'
+
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-    }
-}
-
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-
-Properties properties = new Properties()
-try {
-    properties.load(project.rootProject.file('publish.properties').newDataInputStream())
-} catch (Exception ignored) {
-    println "publish.properties missing"
-}
-
-ext {
-    bintrayRepo = 'mobi.lab.scrolls'
-    bintrayName = 'scrolls-android'
-
-    publishedGroupId = 'lab.mobi.scrolls'
-    libraryName = 'Scrolls Logging library.'
-    artifact = 'scrolls'
-
-    libraryDescription = 'Scrolls v2 library for Android. Allows file logging and log sharing via the system share action.'
-
-    siteUrl = 'https://github.com/MobiSolutions/scrolls-android'
-    gitUrl = 'https://github.com/MobiSolutions/scrolls-android.git'
-
-    libraryVersion = project.ext.publishVersionName
-
-    developerId = properties.getProperty("bintray_developer_id")
-    developerName = properties.getProperty("bintray_developer_name")
-    developerEmail = properties.getProperty("bintray_developer_email")
-
-    licenseName = 'The MIT License'
-    licenseUrl = 'https://opensource.org/licenses/mit-license.php'
-    allLicenses = ["MIT"]
 }
 
 android {
@@ -86,27 +54,106 @@ task(lib_copy_artifacts) doLast {
     }
 }
 
-
 def GROUP_BUILD_TASKS = 'Build'
-task buildLibDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-lib:build', ':scrolls-lib:lib_copy_artifacts'])
-buildLibDebug.group = GROUP_BUILD_TASKS
-buildLibDebug.description = "Build Scrolls library debug version"
+task buildAndPublishRelease(dependsOn: [':scrolls-sample-java:buildAllRelease', 'publish'])
+buildAndPublishRelease.group = GROUP_BUILD_TASKS
+buildAndPublishRelease.description = "Build Scrolls library release version and publish it"
 
-task buildLibRelease(dependsOn: ['buildLibDebug'])
-buildLibRelease.group = GROUP_BUILD_TASKS
-buildLibRelease.description = "Build Scrolls library release version"
-
-task buildAndPublishLibRelease(dependsOn: ['buildLibRelease'])
-buildLibRelease.group = GROUP_BUILD_TASKS
-buildLibRelease.description = "Build Scrolls library release version and publish it"
-
-build.mustRunAfter clean
-
-buildAndPublishLibRelease.mustRunAfter buildLibRelease
+publish.mustRunAfter tasks.findByPath(':scrolls-sample-java:buildAllRelease')
 
 dependencies {
     implementation "com.android.support:support-v4:$rootProject.ext.versionSupport"
     implementation "com.android.support:support-annotations:$rootProject.ext.versionSupport"
 }
 
-// apply from: 'publish.gradle'
+Properties properties = new Properties()
+try {
+    properties.load(project.rootProject.file('publish.properties').newDataInputStream())
+} catch (Exception ignored) {
+    println "publish.properties missing"
+}
+
+ext {
+    libraryVersion = project.ext.publishVersionName
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'mobi.lab.scrolls'
+                artifactId = 'scrolls'
+                version = project.ext.publishVersionName
+                from components.release
+                pom {
+                    packaging = 'aar'
+                    name = 'Scrolls Logging library.'
+                    description = 'Scrolls v2 library for Android. Allows file logging and log sharing via the system share action.'
+                    url = 'https://github.com/MobiSolutions/scrolls-android'
+
+                    licenses {
+                        license {
+                            name = 'The MIT License'
+                            url = 'https://opensource.org/licenses/mit-license.php'
+                        }
+                    }
+                    developers {
+                        developer {
+                            name = properties.getProperty("publish_developer_name")
+                            name = properties.getProperty("publish_developer_name")
+                            email = properties.getProperty("publish_developer_email")
+                            organization = properties.getProperty("publish_developer_organization")
+                            organizationUrl = properties.getProperty("publish_developer_organization_url")
+                        }
+                    }
+                    scm {
+                        connection = 'https://github.com/MobiSolutions/scrolls-android.git'
+                        developerConnection = 'https://github.com/MobiSolutions/scrolls-android.git'
+                        url = 'https://github.com/MobiSolutions/scrolls-android'
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                name = "OSSRH"
+                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+                credentials {
+                    username = properties.getProperty("publish_ossrh_username")
+                    password = properties.getProperty("publish_ossrh_password")
+                }
+            }
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+
+    javadoc.failOnError = false
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives javadocJar
+        archives sourcesJar
+    }
+
+    signing {
+        def signingKey = properties.getProperty("signing_key")
+        def signingPassword = properties.getProperty("signing_password")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications
+    }
+}
+
+
+

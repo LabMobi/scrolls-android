@@ -12,7 +12,7 @@ final String VERSION_FEATURE = "0"
 final String VERSION_MINOR = "8"
 
 buildscript {
-    ext.gradle_plugin_version = '4.2.0-beta06'
+    ext.gradle_plugin_version = '4.1.1'
     repositories {
         mavenCentral()
         google()
@@ -48,7 +48,7 @@ allprojects {
     buildscript {
         project.group = "mobi"
         // Yes yes, I am cheating here.
-        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildAndPublishLibRelease") || project.gradle.startParameter.taskNames.contains("buildLibRelease")
+        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildLibRelease")
 
         String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
         // VersionCode

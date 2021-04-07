@@ -30,7 +30,9 @@ definitions:
     # Build PUBLISH
     - &stepBuildPublish
       name: Build Release and Publish
-      script: ./gradlew buildAndPublishLibRelease
+      script: |
+        cp publish.properties_CODEMAGIC_ENCRYPTED publish.properties
+        ./gradlew buildAndPublishRelease
 
 # Flows
 workflows:
