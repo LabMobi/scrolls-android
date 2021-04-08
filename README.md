@@ -198,7 +198,8 @@ Please see `RELEASE_GUIDE.md`
 
 - Scrolls on GitHub: https://github.com/MobiSolutions/scrolls-android
 - Sonatype OSSRH Nexus UI: [https://s01.oss.sonatype.org](https://s01.oss.sonatype.org/)
-- Scrolls artifacts on Maven Central: https://repo1.maven.org/maven2/mobi/lab/scrolls/scrolls/
+- Scrolls artifacts on Maven Central: https://repo1.maven.org/maven2/mobi/lab/scrolls/scrolls/ (can take some time)
+  - Scrolls artifacts on Sonatype OSSRH: https://s01.oss.sonatype.org/content/groups/public/mobi/lab/scrolls/scrolls/ (available right away after publishing)
 - Original Sonatype OSSRH JIRA issue: https://issues.sonatype.org/browse/OSSRH-66630
   - Can be used to add user access
 - Project access Wiki: https://confluence.lab.mobi/display/DEV/Sonatype+Maven+Access+Credentials
