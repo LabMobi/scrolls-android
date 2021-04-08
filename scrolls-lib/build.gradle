@@ -31,6 +31,46 @@ android {
         println 'CONF: versionCode is set to: ' + project.ext.versionCode
         println 'CONF: is a release build: ' + project.ext.isRelease
     }
+
+    libraryVariants.all { variant ->
+        def variantVersionName = "unknown"
+        def variantVersionFileName = ""
+        if (variant.getName() == "debug") {
+            variantVersionName = "debug"
+            variantVersionFileName = "-debug"
+        } else if (variant.getName() == "release") {
+            variantVersionName = "release"
+            variantVersionFileName = ""
+        }
+        variant.outputs.all {
+            output ->
+                outputFileName = "${project.name}-${variantVersionName}.aar"
+        }
+
+        def variantJavadoc = task("javadoc${variant.name.capitalize()}", type: Javadoc) {
+            dependsOn variant.javaCompileProvider.get()
+            source = android.sourceSets.main.java.srcDirs
+            classpath = project.files(android.bootClasspath, variant.javaCompileProvider.get().classpath)
+            destinationDir = file("javadoc/${variantVersionName}")
+            failOnError false
+        }
+
+        def variantJavadocJar = task("javadocJar${variant.name.capitalize()}", type: Jar) {
+            dependsOn variantJavadoc
+            classifier = "javadoc${variantVersionFileName}"
+            from variantJavadoc.destinationDir
+            version = null
+        }
+
+        def variantGenerateJavadocJar = task("generateJavadocJar${variant.name.capitalize()}", type: Delete) {
+            dependsOn variantJavadocJar
+            delete variantJavadoc.destinationDir
+        }
+
+        javadoc.dependsOn variantJavadoc
+        javadocJar.dependsOn variantJavadocJar
+        generateJavadocJar.dependsOn variantGenerateJavadocJar
+    }
 }
 
 project.ext.libFiles = fileTree(project(':scrolls-lib').projectDir.absolutePath + '/build/outputs/aar/') {
@@ -77,6 +117,15 @@ ext {
     libraryVersion = project.ext.publishVersionName
 }
 
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task javadoc {}
+task javadocJar {}
+task generateJavadocJar {}
+
 afterEvaluate {
     publishing {
         publications {
@@ -85,6 +134,8 @@ afterEvaluate {
                 artifactId = 'scrolls'
                 version = project.ext.publishVersionName
                 from components.release
+                artifact sourcesJar
+                artifact javadocJarRelease
                 pom {
                     packaging = 'aar'
                     name = 'Scrolls Logging library.'
@@ -124,27 +175,6 @@ afterEvaluate {
                 }
             }
         }
-    }
-
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-    }
-
-    task javadoc(type: Javadoc) {
-        source = android.sourceSets.main.java.srcDirs
-        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    }
-
-    javadoc.failOnError = false
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives javadocJar
-        archives sourcesJar
     }
 
     signing {

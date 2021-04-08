@@ -145,3 +145,10 @@ The artifacts should be available under your user folder at `~/.m2/repository/mo
 ```
 
 After that follow the steps from OSSRH nexus described above.
+
+NOTE: To make the PGP private key to a single-line for props you can use the following command:
+
+```bash
+awk -v ORS='\\n' '1' scrolls_maven_artifact_PRIVATE_KEY.pgp > singlelinekey.txt
+```
+
