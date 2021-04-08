@@ -190,16 +190,17 @@ To build the library and the sample app use the following command
 
 After the build the Scrolls library `*.aar` and the sample application `*.apk` can be found under `scrolls-android\scrolls-lib\build\outputs` folder.
 
-### Build only the library
+### Release and publish a new version of the library
 
-To build only the library use the command
+Please see `RELEASE_GUIDE.md`
 
-```groovy
-./gradlew buildLibRelease
-```
+## Links
 
-After the build the Scrolls library `*.aar` can be found under the `scrolls-android\scrolls-lib\build\outputs\aar` folder.
-
-### Release a new version of the library
-
-Please see `RELEASE_GUIDE.md` and `PUBLISHING.md`.
+- Scrolls on GitHub: https://github.com/MobiSolutions/scrolls-android
+- Sonatype OSSRH Nexus UI: [https://s01.oss.sonatype.org](https://s01.oss.sonatype.org/)
+- Scrolls artifacts on Maven Central: https://repo1.maven.org/maven2/mobi/lab/scrolls/scrolls/
+- Original Sonatype OSSRH JIRA issue: https://issues.sonatype.org/browse/OSSRH-66630
+  - Can be used to add user access
+- Project access Wiki: https://confluence.lab.mobi/display/DEV/Sonatype+Maven+Access+Credentials
+- Codemagic CI: https://codemagic.io/apps
+- OSSRH guide: https://central.sonatype.org/publish/publish-guide/
