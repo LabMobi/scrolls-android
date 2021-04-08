@@ -100,6 +100,8 @@ git push
 
 7.2) Release the closed repository. Now the new artifact should be available shortly on the Maven Central at https://repo1.maven.org/maven2/mobi/lab/scrolls/scrolls/
 
+NOTE: Depending in the time of day this can take some time (wait up to 1h and then complain under the original JIRA issue)
+
 8) Create a new release tag in GitHub as follows:
 
 8.1) Open up the GitHub release page at https://github.com/MobiSolutions/scrolls-android/releases, create a new release `vX.Y.Z`. Don't write an additional changelog there, just link to the changelog document.
