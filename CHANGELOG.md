@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.9] - 2021-06-28
+### Changed
+- Moved to AndroidX
+
 ## [2.0.8] - 2021-04-08
 ### Changed
 - Published to Maven Central
