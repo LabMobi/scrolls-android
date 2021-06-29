@@ -86,7 +86,7 @@ Notes:
 
 ### Solving issues
 
-Scrolls for now is not yet moved to AndroidX. If you include it to a brand new project then you may get a compile error about conflicting pre- and post-AndroidX dependencies. To solve this make sure Jetifier is turned on from `gradle.properties`:
+Scrolls is now moved to AndroidX. If you include it to a brand new project then you may get a compile error about conflicting pre- and post-AndroidX dependencies. To solve this make sure Jetifier is turned on from `gradle.properties`:
 
 ```properties
 android.useAndroidX=true

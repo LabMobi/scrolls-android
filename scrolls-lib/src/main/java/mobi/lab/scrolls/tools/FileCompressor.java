@@ -1,7 +1,7 @@
 package mobi.lab.scrolls.tools;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
