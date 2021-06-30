@@ -111,6 +111,7 @@ NOTE: Depending in the time of day this can take some time (wait up to 1h and th
 ## Post-release actions
 
 1) In the `develop` branch update the library version code to a new version so the `develop` branch code and the released code does not have a matching version.
+1.1) Keep the release number in the style of X.Y.Z.
 
 ```clojure
 /**

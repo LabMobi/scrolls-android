@@ -5,11 +5,11 @@ final String VERSION_MAJOR = "2"
 /**
  * Feature version component.
  */
-final String VERSION_FEATURE = "0"
+final String VERSION_FEATURE = "1"
 /**
  * Tweak version component.
  */
-final String VERSION_MINOR = "9"
+final String VERSION_MINOR = "0"
 
 buildscript {
     ext.gradle_plugin_version = '4.1.1'
