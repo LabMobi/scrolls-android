@@ -39,7 +39,7 @@ repositories {
 
 NOTE: Before the Scrolls moved to Maven Central it used to have a different group id -  "lab.mobi.scrolls". If you are migrating from there then be sure to update the group id!
 
-Replace the "X.Y.Z" part with the latest version of the library, available versions are visible at https://bintray.com/mobilab/mobi.lab.scrolls/scrolls-android.
+Replace the "X.Y.Z" part with the latest version of the library, available versions are visible at https://mvnrepository.com/artifact/lab.mobi.scrolls/scrolls.
 
 2) Update you application manifest, add Activity and Provider declarations:
 
