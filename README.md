@@ -1,5 +1,7 @@
 # Scrolls logging library
 
+<img src="img\mobilab-header-logo.png" style="zoom:25%;" />
+
 Scrolls is a simple logging library that allows writing to a local file. 
 
 Features:
