@@ -6,12 +6,17 @@ repositories {
 }
 
 android {
+    namespace = "mobi.lab.scrolls.sample"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     compileSdkVersion project.ext.versionCompileSdk
-    buildToolsVersion project.ext.versionBuildTools
     defaultConfig {
         applicationId 'mobi.lab.scrolls.sample.java'
         minSdkVersion project.ext.versionMinSdkVersion
@@ -28,7 +33,7 @@ android {
 
 // BuildAll tasks
 def GROUP_BUILD_TASKS = 'Build'
-task buildAllDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-sample-java:clean', ':scrolls-lib:build',':scrolls-sample-java:build', ':scrolls-lib:generateJavadocJar', ':scrolls-lib:lib_copy_artifacts'])
+task buildAllDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-sample-java:clean', ':scrolls-lib:build',':scrolls-sample-java:build', ':scrolls-lib:lib_copy_artifacts'])
 buildAllDebug.group = GROUP_BUILD_TASKS
 buildAllDebug.description = "Build Scrolls library and Sample debug versions"
 

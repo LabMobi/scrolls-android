@@ -1,4 +1,3 @@
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'com.android.library'
@@ -11,12 +10,17 @@ buildscript {
 }
 
 android {
+    namespace = "mobi.lab.scrolls"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     compileSdkVersion project.ext.versionCompileSdk
-    buildToolsVersion project.ext.versionBuildTools
     defaultConfig {
         minSdkVersion project.ext.versionMinSdkVersion
         targetSdkVersion project.ext.versionTargetSdk
@@ -54,22 +58,12 @@ android {
             destinationDir = file("javadoc/${variantVersionName}")
             failOnError false
         }
+    }
 
-        def variantJavadocJar = task("javadocJar${variant.name.capitalize()}", type: Jar) {
-            dependsOn variantJavadoc
-            classifier = "javadoc${variantVersionFileName}"
-            from variantJavadoc.destinationDir
-            version = null
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
         }
-
-        def variantGenerateJavadocJar = task("generateJavadocJar${variant.name.capitalize()}", type: Delete) {
-            dependsOn variantJavadocJar
-            delete variantJavadoc.destinationDir
-        }
-
-        javadoc.dependsOn variantJavadoc
-        javadocJar.dependsOn variantJavadocJar
-        generateJavadocJar.dependsOn variantGenerateJavadocJar
     }
 }
 
@@ -117,15 +111,6 @@ ext {
     libraryVersion = project.ext.publishVersionName
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-task javadoc {}
-task javadocJar {}
-task generateJavadocJar {}
-
 afterEvaluate {
     publishing {
         publications {
@@ -134,8 +119,6 @@ afterEvaluate {
                 artifactId = 'scrolls'
                 version = project.ext.publishVersionName
                 from components.release
-                artifact sourcesJar
-                artifact javadocJarRelease
                 pom {
                     packaging = 'aar'
                     name = 'Scrolls Logging library.'
@@ -167,8 +150,8 @@ afterEvaluate {
         }
         repositories {
             maven {
-                name = "OSSRH"
-                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+                name = "ossrh-staging-api"
+                url = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
                 credentials {
                     username = properties.getProperty("publish_ossrh_username")
                     password = properties.getProperty("publish_ossrh_password")

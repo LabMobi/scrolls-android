@@ -12,7 +12,7 @@ final String VERSION_FEATURE = "1"
 final String VERSION_MINOR = "0"
 
 buildscript {
-    ext.gradle_plugin_version = '4.1.1'
+    ext.gradle_plugin_version = '8.10.0'
     repositories {
         mavenCentral()
         google()
@@ -37,7 +37,6 @@ allprojects {
 
         // Tool versions
         versionCompileSdk = 28
-        versionBuildTools = '30.0.2'
         versionMinSdkVersion = 16
         versionTargetSdk = 28
 
