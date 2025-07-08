@@ -5,20 +5,22 @@ final String VERSION_MAJOR = "2"
 /**
  * Feature version component.
  */
-final String VERSION_FEATURE = "0"
+final String VERSION_FEATURE = "1"
 /**
  * Tweak version component.
  */
-final String VERSION_MINOR = "9"
+final String VERSION_MINOR = "0"
 
 buildscript {
-    ext.gradle_plugin_version = '4.1.1'
+    ext.vanniktech = '0.33.0'
+    ext.gradle_plugin_version = '8.10.0'
     repositories {
         mavenCentral()
         google()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_plugin_version"
+        classpath "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin:$vanniktech"
     }
 }
 
@@ -37,7 +39,6 @@ allprojects {
 
         // Tool versions
         versionCompileSdk = 28
-        versionBuildTools = '30.0.2'
         versionMinSdkVersion = 16
         versionTargetSdk = 28
 

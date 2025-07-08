@@ -1,7 +1,6 @@
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
 
 buildscript {
     repositories {
@@ -11,12 +10,17 @@ buildscript {
 }
 
 android {
+    namespace = "mobi.lab.scrolls"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     compileSdkVersion project.ext.versionCompileSdk
-    buildToolsVersion project.ext.versionBuildTools
     defaultConfig {
         minSdkVersion project.ext.versionMinSdkVersion
         targetSdkVersion project.ext.versionTargetSdk
@@ -32,7 +36,7 @@ android {
         println 'CONF: is a release build: ' + project.ext.isRelease
     }
 
-    libraryVariants.all { variant ->
+    libraryVariants.configureEach { variant ->
         def variantVersionName = "unknown"
         def variantVersionFileName = ""
         if (variant.getName() == "debug") {
@@ -46,30 +50,6 @@ android {
             output ->
                 outputFileName = "${project.name}-${variantVersionName}.aar"
         }
-
-        def variantJavadoc = task("javadoc${variant.name.capitalize()}", type: Javadoc) {
-            dependsOn variant.javaCompileProvider.get()
-            source = android.sourceSets.main.java.srcDirs
-            classpath = project.files(android.bootClasspath, variant.javaCompileProvider.get().classpath)
-            destinationDir = file("javadoc/${variantVersionName}")
-            failOnError false
-        }
-
-        def variantJavadocJar = task("javadocJar${variant.name.capitalize()}", type: Jar) {
-            dependsOn variantJavadoc
-            classifier = "javadoc${variantVersionFileName}"
-            from variantJavadoc.destinationDir
-            version = null
-        }
-
-        def variantGenerateJavadocJar = task("generateJavadocJar${variant.name.capitalize()}", type: Delete) {
-            dependsOn variantJavadocJar
-            delete variantJavadoc.destinationDir
-        }
-
-        javadoc.dependsOn variantJavadoc
-        javadocJar.dependsOn variantJavadocJar
-        generateJavadocJar.dependsOn variantGenerateJavadocJar
     }
 }
 
@@ -94,96 +74,63 @@ task(lib_copy_artifacts) doLast {
     }
 }
 
-def GROUP_BUILD_TASKS = 'Build'
-task buildAndPublishRelease(dependsOn: [':scrolls-sample-java:buildAllRelease', 'publish'])
-buildAndPublishRelease.group = GROUP_BUILD_TASKS
-buildAndPublishRelease.description = "Build Scrolls library release version and publish it"
-
-publish.mustRunAfter tasks.findByPath(':scrolls-sample-java:buildAllRelease')
-
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.0.0'
 }
 
-Properties properties = new Properties()
-try {
-    properties.load(project.rootProject.file('publish.properties').newDataInputStream())
-} catch (Exception ignored) {
-    println "publish.properties missing"
+mavenPublishing {
+    // the first parameter represents which variant is published
+    // the second whether to publish a sources jar
+    // the third whether to publish a javadoc jar
+    //configure(new AndroidSingleVariantLibrary("release", true, true))
+
+    // false - manual release required via https://central.sonatype.com/publishing/deployments
+    publishToMavenCentral(false)
+
+    signAllPublications()
+
+    coordinates("mobi.lab.scrolls", "scrolls", "${project.ext.publishVersionName}")
+
+    pom {
+        name = "Scrolls Logging library."
+        description = "Scrolls v2 library for Android. Allows file logging and log sharing via the system share action."
+        inceptionYear = "2019"
+        url = "https://github.com/MobiSolutions/scrolls-android"
+        licenses {
+            license {
+                name = "The MIT License"
+                url = "https://opensource.org/licenses/mit-license.php"
+                distribution = "https://opensource.org/licenses/mit-license.php"
+            }
+        }
+        developers {
+            developer {
+                id = "android@lab.mobi"
+                name = "Mobi Lab"
+                url = "https://lab.mobi"
+            }
+        }
+        scm {
+            connection = 'https://github.com/MobiSolutions/scrolls-android.git'
+            developerConnection = 'https://github.com/MobiSolutions/scrolls-android.git'
+            url = 'https://github.com/MobiSolutions/scrolls-android'
+        }
+    }
 }
+
+tasks.register('buildAndPublishRelease') {
+    group = "Publish"
+    description = "Build the library release version and publish it"
+    dependsOn ":scrolls-sample-java:buildAllRelease", "publishToMavenCentral"
+}
+
+publishToMavenCentral.mustRunAfter tasks.findByPath(':scrolls-sample-java:buildAllRelease')
 
 ext {
     libraryVersion = project.ext.publishVersionName
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-task javadoc {}
-task javadocJar {}
-task generateJavadocJar {}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                groupId = 'mobi.lab.scrolls'
-                artifactId = 'scrolls'
-                version = project.ext.publishVersionName
-                from components.release
-                artifact sourcesJar
-                artifact javadocJarRelease
-                pom {
-                    packaging = 'aar'
-                    name = 'Scrolls Logging library.'
-                    description = 'Scrolls v2 library for Android. Allows file logging and log sharing via the system share action.'
-                    url = 'https://github.com/MobiSolutions/scrolls-android'
-
-                    licenses {
-                        license {
-                            name = 'The MIT License'
-                            url = 'https://opensource.org/licenses/mit-license.php'
-                        }
-                    }
-                    developers {
-                        developer {
-                            name = properties.getProperty("publish_developer_name")
-                            name = properties.getProperty("publish_developer_name")
-                            email = properties.getProperty("publish_developer_email")
-                            organization = properties.getProperty("publish_developer_organization")
-                            organizationUrl = properties.getProperty("publish_developer_organization_url")
-                        }
-                    }
-                    scm {
-                        connection = 'https://github.com/MobiSolutions/scrolls-android.git'
-                        developerConnection = 'https://github.com/MobiSolutions/scrolls-android.git'
-                        url = 'https://github.com/MobiSolutions/scrolls-android'
-                    }
-                }
-            }
-        }
-        repositories {
-            maven {
-                name = "OSSRH"
-                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
-                credentials {
-                    username = properties.getProperty("publish_ossrh_username")
-                    password = properties.getProperty("publish_ossrh_password")
-                }
-            }
-        }
-    }
-
-    signing {
-        def signingKey = properties.getProperty("signing_key")
-        def signingPassword = properties.getProperty("signing_password")
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign publishing.publications
-    }
-}
 
 
 
