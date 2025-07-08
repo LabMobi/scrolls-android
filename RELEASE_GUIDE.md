@@ -44,7 +44,7 @@ git commit -m "Add changelog for version X.Y.Z"
 git push
 ```
 
-1. Make sure the version code in the `develop` branch is correct. If needed—then update the library version from the `build.gradle` file in the project root folder:
+2. Make sure the version code in the `develop` branch is correct. If needed—then update the library version from the `build.gradle` file in the project root folder:
 
 ```
 ext {
@@ -61,8 +61,8 @@ git commit -m "Update the version code to X.Y.Z"
 git push
 ```
 
-1. Make sure the develop build (`develop-builds (Development builds)`) you just started at Codemagic CI is okay and everything is in green.
-2. Merge the `develop` branch to `master`.
+3. Make sure the develop build (`develop-builds (Development builds)`) you just started at Codemagic CI is okay and everything is in green.
+4. Merge the `develop` branch to `master`.
 
 ```
 git checkout develop
@@ -73,18 +73,18 @@ git merge develop
 git push
 ```
 
-1. Start the release build (`release-builds (Release builds for verification (master branch only))`) at Codemagic CI from the `master` branch, make sure it builds fine and everything is in green.
-2. Start the publish build (`publish-builds Publish to Maven builds (master branch only)`) at Codemagic CI from the `master` branch, make sure it builds fine and everything is in green.
-3. Open up https://central.sonatype.com/publishing, navigate to "Deployments".
+5. Start the release build (`release-builds (Release builds for verification (master branch only))`) at Codemagic CI from the `master` branch, make sure it builds fine and everything is in green.
+6. Start the publish build (`publish-builds Publish to Maven builds (master branch only)`) at Codemagic CI from the `master` branch, make sure it builds fine and everything is in green.
+7. Open up https://central.sonatype.com/publishing, navigate to "Deployments".
    - There should be one or more deployments waiting with the same version you are publishing. Pick the correct one, drop the others if there are more than one. This can happen if you run publishing multiple times.
    - Check if the artifacts are okay. If you want to cancel—then "Drop" the repository.
-4. Publish repository by pressing "Publish"
+8. Publish repository by pressing "Publish"
    - Now the new artifact should be available shortly on the Maven Central at https://repo1.maven.org/maven2/mobi/lab/scrolls/scrolls/
    - NOTE: Depending in the time of day this can take some time (30m - 1h)
-5. Create a new release and a Git tag in GitHub as follows:
+9. Create a new release and a Git tag in GitHub as follows:
    - Open up the GitHub release page at https://github.com/MobiSolutions/scrolls-android/releases, create a new release `vX.Y.Z`. Don't write an additional changelog there, just link to the changelog document.
    - Let it automatically create a tag for the release, in the form of "release-X.Y.Z".
-6. OPTIONAL: Update the library in at least one of the projects using it to make sure everything is in order.
+10. OPTIONAL: Update the library in at least one of the projects using it to make sure everything is in order.
 
 ## Post-release actions
 
@@ -119,5 +119,5 @@ git push
 2. Run publishing via command line
 
    ```
-   ./gradlew publishToMavenCentral --no-configuration-cache
+   ./gradlew buildAndPublishRelease
    ```
