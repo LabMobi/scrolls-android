@@ -112,10 +112,6 @@ public class LogPostImpl extends LogPost {
         sb.append("Version: ").append(version)
                 .append("\nDeviceModel: ").append(deviceModel)
                 .append("\nLogType: ").append(type);
-
-        if (tags != null) {
-            sb.append("\nTags: ").append(TextUtils.join(", ", tags));
-        }
         return sb;
     }
 

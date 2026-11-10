@@ -75,7 +75,6 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     /*
      * Params for log post
      */
-    private String[] tags;
     private boolean highlightEnabled;
     private ListView listData;
     private LogReaderAdapter logReaderAdapter;
@@ -98,7 +97,6 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             logFilePath = extras.getString(EXTRA_LOG_FILE_PATH);
-            tags = extras.getStringArray(EXTRA_POST_TAGS);
             highlightEnabled = extras.getBoolean(EXTRA_HIGHLIGHT_ENABLED);
             confirmPost = extras.getBoolean(EXTRA_CONFIRM);
             displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT);
@@ -318,7 +316,6 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         builder.setConfirmEnabled(confirmPost);
         builder.setCompressLogFile(compressLogFile);
         builder.setShowResultEnabled(displayResult);
-        builder.addTags(tags);
         builder.launchActivity(this);
     }
 

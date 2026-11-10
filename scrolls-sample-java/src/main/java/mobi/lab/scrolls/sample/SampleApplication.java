@@ -7,7 +7,6 @@ import mobi.lab.scrolls.LogDeleteImplAge;
 import mobi.lab.scrolls.LogImplCat;
 import mobi.lab.scrolls.LogImplComposite;
 import mobi.lab.scrolls.LogImplFile;
-import mobi.lab.scrolls.LogPost;
 import mobi.lab.scrolls.LogPostBuilder;
 import mobi.lab.scrolls.LogPostImpl;
 import mobi.lab.scrolls.tools.LogHelper;
@@ -55,8 +54,7 @@ public class SampleApplication extends Application {
                 // With the debug build we've also initiated LogImplFile
                 // If you want to use only LogImplCat, use LogPostBuilder(LogPost.LOG_TYPE_LOGCAT) constructor instead
                 LogPostBuilder builder = new LogPostBuilder();
-                builder.addTags(LogPost.LOG_TAG_CRASH)
-                        .setConfirmEnabled(true)
+                builder.setConfirmEnabled(true)
                         .setShowResultEnabled(true)
                         .launchActivity(getApplicationContext());
 
@@ -65,7 +63,7 @@ public class SampleApplication extends Application {
             });
 
             // the above statement is equivalent to:
-            //LogHelper.setUncaughtExceptionHandler(getApplicationContext(), true, true, LogPost.LOG_TAG_CRASH);
+            //LogHelper.setUncaughtExceptionHandler(getApplicationContext(), true, true);
         }
     }
 }

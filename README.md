@@ -166,7 +166,6 @@ LogPostImpl.configure(this, BuildConfig.APPLICATION_ID + ".logs" /** Provider **
  * Log files are compressed into a .zip attachment by default (use builder.setCompressLogFile(false) to share raw .txt files).
  */
 LogPostBuilder builder = new LogPostBuilder();
-builder.addTags("my","first","post");    // Sample method to configure tags for the post
 /*
  * Do the actual post by starting log posting activity.
  */
