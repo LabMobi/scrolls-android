@@ -228,6 +228,12 @@ public class LogHelper {
         try {
             if (file != null && file.exists() && file.isFile()) {
                 success = file.delete();
+                final File compressedCandidate = FileCompressor.createCompressedFileCandidateFromUncompressedFilePath(file);
+                if (!compressedCandidate.equals(file) && compressedCandidate.exists() && compressedCandidate.isFile()) {
+                    if (compressedCandidate.delete() && verbose) {
+                        log.d("Deleted companion compressed file: " + compressedCandidate.getName());
+                    }
+                }
             }
         } catch (SecurityException e) {
             if (verbose) {
