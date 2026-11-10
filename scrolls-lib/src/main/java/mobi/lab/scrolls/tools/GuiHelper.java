@@ -38,6 +38,7 @@ public class GuiHelper {
             newViewContainer = frame;
             newViewContainer.addView(viewContainer);
         }
+        newViewContainer.setFitsSystemWindows(true);
 
         // Add the progress indicator
         final ProgressBar progressBar = new ProgressBar(context);
