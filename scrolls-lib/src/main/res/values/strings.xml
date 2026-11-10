@@ -25,6 +25,8 @@
     <string name="text_copied_to_clipboard">Line copied to clipboard</string>
     <string name="mark_error_logs">Mark logs with errors</string>
     <string name="reload_this_log">Reload</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="scroll_to_bottom">Scroll to bottom</string>
     <string name="retry">Retry</string>
     <string name="title_dialog_retry">Posting failed</string>
     <string name="title_email_chooser">Send email</string>

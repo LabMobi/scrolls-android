@@ -10,6 +10,7 @@ import mobi.lab.scrolls.LogImplFile;
 import mobi.lab.scrolls.LogPost;
 import mobi.lab.scrolls.LogPostBuilder;
 import mobi.lab.scrolls.LogViewBuilder;
+import mobi.lab.scrolls.tools.GuiHelper;
 
 public class HelloLogPostActivity extends Activity {
 
@@ -27,6 +28,7 @@ public class HelloLogPostActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        GuiHelper.applySystemBarInsets(findViewById(android.R.id.content));
         final String versionValue = getString(R.string.text_scrolls_version_x, Log.getVersion());
         final TextView textVersion = findViewById(R.id.text_scrolls_version);
         textVersion.setText(versionValue);

@@ -231,37 +231,37 @@ public class LogListActivity extends ListActivity implements SharedConstants {
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_DELETE_ALL:
                 deleteLogFiles();
-                break;
+                return true;
             case MENU_ITEM_MARK_ERRORS:
                 markLogFilesWithErrors();
-                break;
+                return true;
         }
-        return super.onMenuItemSelected(featureId, item);
+        return super.onOptionsItemSelected(item);
     }
 
     /**
      * Create a typical ListActivity layout
      */
     protected View createLayout() {
-        // LinearLayoyut container
+        // LinearLayout container
         final LinearLayout viewContainer = new LinearLayout(this);
-        final LinearLayout.LayoutParams viewContainerParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final LinearLayout.LayoutParams viewContainerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         viewContainer.setLayoutParams(viewContainerParams);
 
         // Android ListView
         final ListView listView = new ListView(this);
-        final ListView.LayoutParams listViewParams = new ListView.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final ListView.LayoutParams listViewParams = new ListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         listView.setLayoutParams(listViewParams);
         listView.setId(android.R.id.list);
         listView.setFastScrollEnabled(true);
 
         // Android empty ListView TextView
         final TextView textView = new TextView(this);
-        final LayoutParams textViewParams = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final LayoutParams textViewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         textView.setLayoutParams(textViewParams);
         textView.setId(android.R.id.empty);
         textView.setGravity(Gravity.CENTER);

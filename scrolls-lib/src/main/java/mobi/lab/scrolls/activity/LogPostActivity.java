@@ -19,6 +19,7 @@ import mobi.lab.scrolls.Log;
 import mobi.lab.scrolls.LogPost;
 import mobi.lab.scrolls.R;
 import mobi.lab.scrolls.data.LogFileActListener;
+import mobi.lab.scrolls.tools.GuiHelper;
 import mobi.lab.scrolls.tools.SharedConstants;
 import mobi.lab.scrolls.view.ConfirmDialogLayout;
 
@@ -44,6 +45,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GuiHelper.applySystemBarInsets(findViewById(android.R.id.content));
         log = Log.getInstance(this);
         processStarted = false;
         // Assume activity result as canceled

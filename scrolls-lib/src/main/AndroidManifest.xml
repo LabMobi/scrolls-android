@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest>
-    <application />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name="mobi.lab.scrolls.activity.LogListActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="mobi.lab.scrolls.activity.LogReaderActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="mobi.lab.scrolls.activity.LogPostActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+    </application>
 </manifest>
