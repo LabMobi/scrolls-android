@@ -8,9 +8,14 @@
 ### Changed
 - Updated Gradle to 9.8.2, Android Gradle Plugin to 9.5.1, Java compatibility to 21, and migrated dependencies to Gradle Version Catalog (`compileSdk 37`, `targetSdk 36`, `minSdk 25`).
 - Replaced deprecated `androidx.legacy:legacy-support-v4` with `androidx.core:core` and updated `androidx.annotation:annotation`.
+- Enabled `.zip` log file compression by default when posting/sharing logs (`compressLogFile = true` in `LogPost`, `LogPostBuilder`, `LogViewBuilder`, and viewer activities; pass `setCompressLogFile(false)` to share raw `.txt` files).
+
+### Removed
+- Removed legacy log post tags functionality (`addTags`, `setTags`, `EXTRA_POST_TAGS`, and the tag input field in the post confirmation dialog).
 
 ### Fixed
 - Fixed edge-to-edge `WindowInsets` handling in `LogListActivity`, `LogReaderActivity`, and `LogPostActivity` on Android 15+ (SDK 35+).
+- Fixed `LogReaderActivity` not forwarding the `compressLogFile` setting when posting logs, and updated `LogPostImpl` to use `application/octet-stream` for raw `.txt` attachments and explicit URI read grants (`ClipData` + `FLAG_GRANT_READ_URI_PERMISSION`) on `ACTION_SEND`.
 
 ## [2.0.9] - 2021-06-28
 ### Changed

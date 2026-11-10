@@ -24,15 +24,6 @@ public abstract class LogPost {
      */
     public static String LOG_TYPE_LOGCAT = "logcat";
 
-    /**
-     * Tag used for test tag
-     */
-    public static String LOG_TAG_TEST = "test";
-    /**
-     * Tag used for app crash
-     */
-    public static String LOG_TAG_CRASH = "crash";
-
     /*
      * Optional fields
      */
@@ -40,8 +31,7 @@ public abstract class LogPost {
     protected static String version;
     protected static String fileProviderAuthority;
     protected String type;
-    protected String[] tags;
-    protected boolean compressLogFile;
+    protected boolean compressLogFile = true;
     protected LogPostListener listener;
 
     private static Class logPostImplementation;
@@ -111,16 +101,6 @@ public abstract class LogPost {
             type = LogPost.LOG_TYPE_MOBILE;
         }
         this.type = type;
-    }
-
-
-    /**
-     * Sets custom tags associated with the posted log
-     *
-     * @param tags Tags
-     */
-    public void setTags(String[] tags) {
-        this.tags = tags;
     }
 
     /**

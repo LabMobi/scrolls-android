@@ -40,6 +40,12 @@ public class FileCompressor {
     @WorkerThread
     public static boolean compressFiles(@NonNull final File[] targetFiles, @NonNull final File compressedFile) {
         try {
+            for (File file : targetFiles) {
+                if (compressedFile.equals(file)) {
+                    Log.w("FileCompressor", "compressFiles aborted: target file equals destination compressedFile");
+                    return false;
+                }
+            }
             final int bufferSize = 4096;
             BufferedInputStream origin;
             final FileOutputStream dest = new FileOutputStream(compressedFile);

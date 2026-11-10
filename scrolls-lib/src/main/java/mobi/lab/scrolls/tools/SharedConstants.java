@@ -16,10 +16,6 @@ public interface SharedConstants {
      */
     String EXTRA_LOG_FOLDER_PATH = "com.mobi.scrolls.android.EXTRA_LOG_FOLDER_PATH";
     /**
-     * For posting logs: String array of tags to add
-     */
-    String EXTRA_POST_TAGS = "com.mobi.scrolls.android.EXTRA_POST_TAGS";
-    /**
      * For viewing a log: Should the LogReaderActivity try to add highlight color to error and warning log lines or not (default: enabled)
      */
     String EXTRA_HIGHLIGHT_ENABLED = "com.mobi.scrolls.android.EXTRA_HIGHLIGHT_ENABLED";

@@ -228,6 +228,12 @@ public class LogHelper {
         try {
             if (file != null && file.exists() && file.isFile()) {
                 success = file.delete();
+                final File compressedCandidate = FileCompressor.createCompressedFileCandidateFromUncompressedFilePath(file);
+                if (!compressedCandidate.equals(file) && compressedCandidate.exists() && compressedCandidate.isFile()) {
+                    if (compressedCandidate.delete() && verbose) {
+                        log.d("Deleted companion compressed file: " + compressedCandidate.getName());
+                    }
+                }
             }
         } catch (SecurityException e) {
             if (verbose) {
@@ -431,14 +437,13 @@ public class LogHelper {
      * @param versionName
      * @param versionCode
      * @param logFilePath
-     * @param postTags
      * @param confirm
      * @param displayResult
      * @deprecated Was meant for Scrolls 1.0 and contains unused parameters
      */
     public static void setUncaughtExceptionHandlerAndLogPostExtras(final Context applicationContext, final String logType,
                                                                    final String projectName, final String versionName, final int versionCode,
-                                                                   final String logFilePath, final String[] postTags, final boolean confirm, final boolean displayResult) {
+                                                                   final String logFilePath, final boolean confirm, final boolean displayResult) {
 
         final UncaughtExceptionHandler defaultExceptionHandler = Thread.currentThread().getUncaughtExceptionHandler();
 
@@ -451,7 +456,6 @@ public class LogHelper {
                 final Intent intent = new Intent(applicationContext, LogPostActivity.class);
                 intent.putExtra(LogPostActivity.EXTRA_LOGTYPE, logType);
                 intent.putExtra(LogPostActivity.EXTRA_LOG_FILE_PATH, logFilePath);
-                intent.putExtra(LogPostActivity.EXTRA_POST_TAGS, postTags);
                 intent.putExtra(LogPostActivity.EXTRA_CONFIRM, confirm);
                 intent.putExtra(LogPostActivity.EXTRA_DISPLAY_RESULT, displayResult);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -469,9 +473,8 @@ public class LogHelper {
      * @param applicationContext
      * @param confirm
      * @param displayResult
-     * @param tags
      */
-    public static void setUncaughtExceptionHandler(final Context applicationContext, final boolean confirm, final boolean displayResult, final String... tags) {
+    public static void setUncaughtExceptionHandler(final Context applicationContext, final boolean confirm, final boolean displayResult) {
         final UncaughtExceptionHandler defaultExceptionHandler = Thread.currentThread().getUncaughtExceptionHandler();
         Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
@@ -483,10 +486,6 @@ public class LogHelper {
                 builder.setConfirmEnabled(confirm)
                         .setShowResultEnabled(displayResult)
                         .launchActivity(applicationContext);
-
-                if (tags != null) {
-                    builder.addTags(tags);
-                }
 
                 // Call the system default handler
                 defaultExceptionHandler.uncaughtException(thread, ex);

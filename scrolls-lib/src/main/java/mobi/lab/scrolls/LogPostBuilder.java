@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import mobi.lab.scrolls.activity.LogPostActivity;
 
@@ -15,10 +12,9 @@ import mobi.lab.scrolls.activity.LogPostActivity;
  */
 public class LogPostBuilder {
     private File file = null;
-    private Set<String> tags = new HashSet<>();
     private boolean confirmPost = true;
     private boolean displayResult = true;
-    private boolean compressLogFile = false;
+    private boolean compressLogFile = true;
     private String logType = LogPost.LOG_TYPE_MOBILE;
 
     /**
@@ -47,21 +43,6 @@ public class LogPostBuilder {
      */
     public LogPostBuilder setFile(File f) {
         this.file = f;
-        return this;
-    }
-
-    /**
-     * Adds custom tags to the log
-     *
-     * @param tags Tags
-     * @return LogPostBuilder
-     */
-    public LogPostBuilder addTags(String... tags) {
-        if (tags != null && tags.length > 0) {
-            this.tags.addAll(Arrays.asList(tags));
-        } else {
-            this.tags.clear();
-        }
         return this;
     }
 
@@ -126,7 +107,6 @@ public class LogPostBuilder {
     public void launchActivity(Context context) {
         Intent intent = new Intent(context, LogPostActivity.class);
         intent.putExtra(LogPostActivity.EXTRA_LOG_FILE_PATH, getLogFilesPath());
-        intent.putExtra(LogPostActivity.EXTRA_POST_TAGS, tags.toArray(new String[0]));
         intent.putExtra(LogPostActivity.EXTRA_CONFIRM, confirmPost);
         intent.putExtra(LogPostActivity.EXTRA_LOGTYPE, logType);
         intent.putExtra(LogPostActivity.EXTRA_DISPLAY_RESULT, displayResult);

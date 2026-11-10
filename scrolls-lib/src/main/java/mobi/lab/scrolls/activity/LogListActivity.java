@@ -76,14 +76,13 @@ public class LogListActivity extends ListActivity implements SharedConstants {
     /*
      * Params for log post
      */
-    private String[] tags;
     private boolean highlightEnabled;
     private boolean isLoading;
     private LogListMarker markerWorker;
     private LogListLoader searchWorker;
     private boolean displayResult;
     private boolean confirmPost;
-    private boolean compressLogFile;
+    private boolean compressLogFile = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +97,8 @@ public class LogListActivity extends ListActivity implements SharedConstants {
             logFolderPath = extras.getString(EXTRA_LOG_FOLDER_PATH);
             displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT, true);
             confirmPost = extras.getBoolean(EXTRA_CONFIRM, true);
-            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, false);
+            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
             highlightEnabled = extras.getBoolean(EXTRA_HIGHLIGHT_ENABLED, true);
-            tags = extras.getStringArray(EXTRA_POST_TAGS);
         }
 
         if (TextUtils.isEmpty(logFolderPath)) {
@@ -150,7 +148,6 @@ public class LogListActivity extends ListActivity implements SharedConstants {
         if (item != null) {
             final LogViewBuilder builder = new LogViewBuilder();
             builder.setFile(new File(item.getPath()));
-            builder.addTags(tags);
             builder.setConfirmEnabled(confirmPost);
             builder.setCompressLogFile(compressLogFile);
             builder.setHighlightEnabled(highlightEnabled);
@@ -400,7 +397,6 @@ public class LogListActivity extends ListActivity implements SharedConstants {
         builder.setConfirmEnabled(confirmPost);
         builder.setCompressLogFile(compressLogFile);
         builder.setShowResultEnabled(displayResult);
-        builder.addTags(tags);
         builder.launchActivity(this);
     }
 

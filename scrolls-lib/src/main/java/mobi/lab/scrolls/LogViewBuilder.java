@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import mobi.lab.scrolls.activity.LogListActivity;
 import mobi.lab.scrolls.activity.LogReaderActivity;
@@ -21,8 +19,7 @@ public class LogViewBuilder {
     private boolean confirmPost;
     private boolean displayResult;
     private boolean highlightEnabled;
-    private boolean compressLogFile = false;
-    private HashSet<String> tags;
+    private boolean compressLogFile = true;
 
     /**
      * Builder for opening an activity to see a list of logs or one single log form some specific path
@@ -32,7 +29,6 @@ public class LogViewBuilder {
         this.confirmPost = true;
         this.displayResult = true;
         this.highlightEnabled = true;
-        this.tags = new HashSet<String>();
     }
 
     public LogViewBuilder setDirectory(final File dir) {
@@ -64,21 +60,6 @@ public class LogViewBuilder {
         setHighlightEnabled(true); // default choice
         setShowResultEnabled(true); // default choice
         setConfirmEnabled(true); // default choice
-        return this;
-    }
-
-    /**
-     * Adds custom tags to the log
-     *
-     * @param tags
-     * @return
-     */
-    public LogViewBuilder addTags(String... tags) {
-        if (tags != null && tags.length > 0) {
-            this.tags.addAll(Arrays.asList(tags));
-        } else {
-            this.tags.clear();
-        }
         return this;
     }
 
@@ -145,8 +126,6 @@ public class LogViewBuilder {
         intent.putExtra(SharedConstants.EXTRA_DISPLAY_RESULT, displayResult);
         intent.putExtra(SharedConstants.EXTRA_HIGHLIGHT_ENABLED, highlightEnabled);
         intent.putExtra(SharedConstants.EXTRA_COMPRESS_LOG_FILE, compressLogFile);
-        final String[] contents = new String[tags.size()];
-        intent.putExtra(SharedConstants.EXTRA_POST_TAGS, tags.toArray(contents));
 
         if (!(context instanceof Activity)) {
             // This is no an activity context, seems we need to the new task flag

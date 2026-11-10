@@ -3,7 +3,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
-    <string name="hint_tags_input">Comma separated tags</string>
     <string name="post_this_log">Post this log</string>
     <string name="delete_this_log">Delete this log</string>
     <string name="delete_all_except_current">Delete all except current</string>
