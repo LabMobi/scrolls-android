@@ -21,7 +21,7 @@ public class LogViewBuilder {
     private boolean confirmPost;
     private boolean displayResult;
     private boolean highlightEnabled;
-    private boolean compressLogFile = false;
+    private boolean compressLogFile = true;
     private HashSet<String> tags;
 
     /**

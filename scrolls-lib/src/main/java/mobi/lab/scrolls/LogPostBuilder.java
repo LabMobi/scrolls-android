@@ -18,7 +18,7 @@ public class LogPostBuilder {
     private Set<String> tags = new HashSet<>();
     private boolean confirmPost = true;
     private boolean displayResult = true;
-    private boolean compressLogFile = false;
+    private boolean compressLogFile = true;
     private String logType = LogPost.LOG_TYPE_MOBILE;
 
     /**

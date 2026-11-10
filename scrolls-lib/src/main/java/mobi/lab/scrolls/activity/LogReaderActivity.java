@@ -83,6 +83,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     private boolean isLoading;
     private boolean confirmPost;
     private boolean displayResult;
+    private boolean compressLogFile = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
             highlightEnabled = extras.getBoolean(EXTRA_HIGHLIGHT_ENABLED);
             confirmPost = extras.getBoolean(EXTRA_CONFIRM);
             displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT);
+            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
         }
 
         if (TextUtils.isEmpty(logFilePath)) {
@@ -314,6 +316,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         final LogPostBuilder builder = new LogPostBuilder();
         builder.setFile(new File(logFilePath));
         builder.setConfirmEnabled(confirmPost);
+        builder.setCompressLogFile(compressLogFile);
         builder.setShowResultEnabled(displayResult);
         builder.addTags(tags);
         builder.launchActivity(this);

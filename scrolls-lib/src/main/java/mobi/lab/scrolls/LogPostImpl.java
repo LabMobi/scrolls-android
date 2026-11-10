@@ -1,5 +1,6 @@
 package mobi.lab.scrolls;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -90,11 +91,15 @@ public class LogPostImpl extends LogPost {
 
     private void sendEmail(Context context, String message, Uri attachment) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType(compressLogFile ? "application/zip" : "text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, createTitle(context));
         intent.putExtra(Intent.EXTRA_TEXT, message);
         if (attachment != null) {
+            intent.setType(compressLogFile ? "application/zip" : "application/octet-stream");
             intent.putExtra(Intent.EXTRA_STREAM, attachment);
+            intent.setClipData(ClipData.newRawUri(null, attachment));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.setType("text/plain");
         }
 
         Intent chooserIntent = Intent.createChooser(intent, context.getString(R.string.title_email_chooser));

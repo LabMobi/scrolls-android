@@ -41,7 +41,7 @@ public abstract class LogPost {
     protected static String fileProviderAuthority;
     protected String type;
     protected String[] tags;
-    protected boolean compressLogFile;
+    protected boolean compressLogFile = true;
     protected LogPostListener listener;
 
     private static Class logPostImplementation;

@@ -83,7 +83,7 @@ public class LogListActivity extends ListActivity implements SharedConstants {
     private LogListLoader searchWorker;
     private boolean displayResult;
     private boolean confirmPost;
-    private boolean compressLogFile;
+    private boolean compressLogFile = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class LogListActivity extends ListActivity implements SharedConstants {
             logFolderPath = extras.getString(EXTRA_LOG_FOLDER_PATH);
             displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT, true);
             confirmPost = extras.getBoolean(EXTRA_CONFIRM, true);
-            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, false);
+            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
             highlightEnabled = extras.getBoolean(EXTRA_HIGHLIGHT_ENABLED, true);
             tags = extras.getStringArray(EXTRA_POST_TAGS);
         }

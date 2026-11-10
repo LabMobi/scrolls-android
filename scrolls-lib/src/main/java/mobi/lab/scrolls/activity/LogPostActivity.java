@@ -126,7 +126,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
         final Bundle extras = getIntent().getExtras();
         final String filename = extras.getString(EXTRA_LOG_FILE_PATH);
         final String[] extraTags = extras.getStringArray(EXTRA_POST_TAGS);
-        final boolean compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, false);
+        final boolean compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
 
         String[] finalTags;
         if (tags.length > 0) {
@@ -144,7 +144,8 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
         logPost.setTags(finalTags);
         logPost.setType(logType);
         logPost.setCompressLogFile(compressLogFile);
-        logPost.post(getApplicationContext(), TAG_POST_LOGS, null, new File(filename), createLogPostListener());
+        final File attachment = !TextUtils.isEmpty(filename) ? new File(filename) : null;
+        logPost.post(getApplicationContext(), TAG_POST_LOGS, null, attachment, createLogPostListener());
     }
 
     private LogPost.LogPostListener createLogPostListener() {

@@ -60,12 +60,12 @@ public class HelloLogPostActivity extends Activity {
 
     public void postLogsFromFile(View v) {
         LogPostBuilder builder = new LogPostBuilder();
-        builder.addTags("my", "first", "post").launchActivity(this);
+        builder.addTags("my", "first", "post").setCompressLogFile(false).launchActivity(this);
     }
 
     public void postLogsFromFileZipped(View v) {
         LogPostBuilder builder = new LogPostBuilder();
-        builder.addTags("zipped").setCompressLogFile(true).setConfirmEnabled(false).launchActivity(this);
+        builder.addTags("zipped").setConfirmEnabled(false).launchActivity(this);
     }
 
     public void postLogsWithActivityFromLogcat(View v) {
