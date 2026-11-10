@@ -63,6 +63,8 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     private static final int MENU_ITEM_POST = 0;
     private static final int MENU_ITEM_DELETE = 1;
     private static final int MENU_ITEM_RELOAD = 2;
+    private static final int MENU_ITEM_SCROLL_TOP = 3;
+    private static final int MENU_ITEM_SCROLL_BOTTOM = 4;
 
     private Log log;
     private String logFilePath;
@@ -73,7 +75,6 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     /*
      * Params for log post
      */
-    private String[] tags;
     private boolean highlightEnabled;
     private ListView listData;
     private LogReaderAdapter logReaderAdapter;
@@ -81,6 +82,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     private boolean isLoading;
     private boolean confirmPost;
     private boolean displayResult;
+    private boolean compressLogFile = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +97,10 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             logFilePath = extras.getString(EXTRA_LOG_FILE_PATH);
-            tags = extras.getStringArray(EXTRA_POST_TAGS);
             highlightEnabled = extras.getBoolean(EXTRA_HIGHLIGHT_ENABLED);
             confirmPost = extras.getBoolean(EXTRA_CONFIRM);
             displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT);
+            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
         }
 
         if (TextUtils.isEmpty(logFilePath)) {
@@ -106,6 +108,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
             finish();
             return;
         }
+        setTitle(new File(logFilePath).getName());
 
         final ResultHolder holder = (ResultHolder) getLastNonConfigurationInstance();
         if (holder != null && holder.data != null) {
@@ -133,6 +136,8 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         menu.add(ContextMenu.NONE, MENU_ITEM_POST, ContextMenu.NONE, getString(R.string.post_this_log));
         menu.add(ContextMenu.NONE, MENU_ITEM_DELETE, ContextMenu.NONE, getString(R.string.delete_this_log));
         menu.add(ContextMenu.NONE, MENU_ITEM_RELOAD, ContextMenu.NONE, getString(R.string.reload_this_log));
+        menu.add(ContextMenu.NONE, MENU_ITEM_SCROLL_TOP, ContextMenu.NONE, getString(R.string.scroll_to_top));
+        menu.add(ContextMenu.NONE, MENU_ITEM_SCROLL_BOTTOM, ContextMenu.NONE, getString(R.string.scroll_to_bottom));
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -140,30 +145,36 @@ public class LogReaderActivity extends Activity implements SharedConstants {
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem postItem = menu.findItem(MENU_ITEM_POST);
         final MenuItem deleteItem = menu.findItem(MENU_ITEM_DELETE);
-        if (logData == null) {
-            postItem.setVisible(false);
-            deleteItem.setVisible(false);
-        } else {
-            postItem.setVisible(true);
-            deleteItem.setVisible(true);
-        }
+        final MenuItem scrollTopItem = menu.findItem(MENU_ITEM_SCROLL_TOP);
+        final MenuItem scrollBottomItem = menu.findItem(MENU_ITEM_SCROLL_BOTTOM);
+        final boolean hasData = logData != null && !logData.isEmpty();
+        postItem.setVisible(logData != null);
+        deleteItem.setVisible(logData != null);
+        scrollTopItem.setVisible(hasData);
+        scrollBottomItem.setVisible(hasData);
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_POST:
                 postLogFile();
-                break;
+                return true;
             case MENU_ITEM_DELETE:
                 deleteLogFile();
-                break;
+                return true;
             case MENU_ITEM_RELOAD:
                 reloadLogFile();
-                break;
+                return true;
+            case MENU_ITEM_SCROLL_TOP:
+                scrollToTop();
+                return true;
+            case MENU_ITEM_SCROLL_BOTTOM:
+                scrollToBottom();
+                return true;
         }
-        return super.onMenuItemSelected(featureId, item);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -303,8 +314,8 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         final LogPostBuilder builder = new LogPostBuilder();
         builder.setFile(new File(logFilePath));
         builder.setConfirmEnabled(confirmPost);
+        builder.setCompressLogFile(compressLogFile);
         builder.setShowResultEnabled(displayResult);
-        builder.addTags(tags);
         builder.launchActivity(this);
     }
 
@@ -313,18 +324,30 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         finish();
     }
 
+    protected void scrollToTop() {
+        if (listData != null && logData != null && !logData.isEmpty()) {
+            listData.setSelection(0);
+        }
+    }
+
+    protected void scrollToBottom() {
+        if (listData != null && logData != null && !logData.isEmpty()) {
+            listData.setSelection(logData.size() - 1);
+        }
+    }
+
     /**
      * Create a typical ListActivity layout
      */
     protected View createLayout() {
         // Container
         final FrameLayout viewContainer = new FrameLayout(this);
-        final FrameLayout.LayoutParams viewContainerParams = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final FrameLayout.LayoutParams viewContainerParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         viewContainer.setLayoutParams(viewContainerParams);
 
         // TextView
         final TextView textView = new TextView(this);
-        final FrameLayout.LayoutParams textViewParams = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final FrameLayout.LayoutParams textViewParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         textView.setId(ID_TEXT_DATA);
         textView.setGravity(Gravity.CENTER);
         textView.setVisibility(View.VISIBLE);
@@ -336,7 +359,7 @@ public class LogReaderActivity extends Activity implements SharedConstants {
         viewList.setDivider(null);
         viewList.setDividerHeight(0);
         viewList.setVisibility(View.INVISIBLE);
-        final FrameLayout.LayoutParams viewListParams = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        final FrameLayout.LayoutParams viewListParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         viewContainer.addView(viewList, viewListParams);
         viewContainer.addView(textView, textViewParams);

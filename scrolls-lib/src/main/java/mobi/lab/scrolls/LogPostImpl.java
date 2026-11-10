@@ -1,5 +1,6 @@
 package mobi.lab.scrolls;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Locale;
 
 import mobi.lab.scrolls.tools.FileCompressor;
 import mobi.lab.scrolls.tools.LogHelper;
@@ -48,7 +50,7 @@ public class LogPostImpl extends LogPost {
             message = createLogCatMessageIfNeeded(context, message);
 
             Uri uri = createUriIfNeeded(context, targetAttachment);
-            sendEmail(context, createMessageWithHeader(message), uri);
+            sendEmail(context, createMessageWithHeader(message), uri, isCompressedFile(targetAttachment));
             handler.post(() -> {
                 if (listener != null) {
                     listener.onLogPostSuccess(callbackTag, content, originalAttachment);
@@ -64,12 +66,19 @@ public class LogPostImpl extends LogPost {
     }
 
     private File compressAttachmentIfNeeded(File originalAttachment) {
-        if (!compressLogFile || originalAttachment == null) {
+        if (!compressLogFile || originalAttachment == null || isCompressedFile(originalAttachment)) {
             return originalAttachment;
         }
         final File targetFile = FileCompressor.createCompressedFileCandidateFromUncompressedFilePath(originalAttachment);
+        if (targetFile.equals(originalAttachment)) {
+            return originalAttachment;
+        }
         final boolean success = FileCompressor.compressFiles(new File[]{originalAttachment}, targetFile);
         return success ? targetFile : originalAttachment;
+    }
+
+    private boolean isCompressedFile(@Nullable File file) {
+        return file != null && file.getName().toLowerCase(Locale.ROOT).endsWith(LogImplFile.getCompressedLogFileExtension());
     }
 
     private Uri createUriIfNeeded(@NonNull Context context, @Nullable File attachment) {
@@ -88,13 +97,17 @@ public class LogPostImpl extends LogPost {
         return message;
     }
 
-    private void sendEmail(Context context, String message, Uri attachment) {
+    private void sendEmail(Context context, String message, Uri attachment, boolean isCompressedAttachment) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType(compressLogFile ? "application/zip" : "text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, createTitle(context));
         intent.putExtra(Intent.EXTRA_TEXT, message);
         if (attachment != null) {
+            intent.setType(isCompressedAttachment ? "application/zip" : "application/octet-stream");
             intent.putExtra(Intent.EXTRA_STREAM, attachment);
+            intent.setClipData(ClipData.newRawUri(null, attachment));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.setType("text/plain");
         }
 
         Intent chooserIntent = Intent.createChooser(intent, context.getString(R.string.title_email_chooser));
@@ -107,10 +120,6 @@ public class LogPostImpl extends LogPost {
         sb.append("Version: ").append(version)
                 .append("\nDeviceModel: ").append(deviceModel)
                 .append("\nLogType: ").append(type);
-
-        if (tags != null) {
-            sb.append("\nTags: ").append(TextUtils.join(", ", tags));
-        }
         return sb;
     }
 

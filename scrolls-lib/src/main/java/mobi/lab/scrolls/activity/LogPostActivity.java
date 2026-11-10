@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.widget.Toast;
 
 import java.io.File;
@@ -19,8 +17,8 @@ import mobi.lab.scrolls.Log;
 import mobi.lab.scrolls.LogPost;
 import mobi.lab.scrolls.R;
 import mobi.lab.scrolls.data.LogFileActListener;
+import mobi.lab.scrolls.tools.GuiHelper;
 import mobi.lab.scrolls.tools.SharedConstants;
-import mobi.lab.scrolls.view.ConfirmDialogLayout;
 
 /**
  * Activity for allowing user to post logs. If there is need to use this in case of app crashes the you should use run this in another process<br>
@@ -38,12 +36,12 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
 
     private Log log;
     private boolean processStarted;
-    private String[] tags;
     private LogPost logPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GuiHelper.applySystemBarInsets(findViewById(android.R.id.content));
         log = Log.getInstance(this);
         processStarted = false;
         // Assume activity result as canceled
@@ -101,48 +99,22 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(STATE_POST_PROCESS, processStarted);
-        outState.putStringArray(EXTRA_POST_TAGS, tags);
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState.containsKey(EXTRA_POST_TAGS)) {
-            tags = savedInstanceState.getStringArray(EXTRA_POST_TAGS);
-        } else {
-            tags = new String[0];
-        }
-    }
-
     protected void startLogPost() {
-        startLogPost(new String[0]);
-    }
-
-    protected void startLogPost(String[] tags) {
-        // // Let's assume no dialog bundles so get the extras again
+        // Let's assume no dialog bundles so get the extras again
         final Bundle extras = getIntent().getExtras();
         final String filename = extras.getString(EXTRA_LOG_FILE_PATH);
-        final String[] extraTags = extras.getStringArray(EXTRA_POST_TAGS);
-        final boolean compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, false);
-
-        String[] finalTags;
-        if (tags.length > 0) {
-            finalTags = new String[extraTags.length + tags.length];
-            System.arraycopy(extraTags, 0, finalTags, 0, extraTags.length);
-            System.arraycopy(tags, 0, finalTags, extraTags.length, tags.length);
-        } else {
-            finalTags = extraTags;
-        }
+        final boolean compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
         String logType = extras.getString(EXTRA_LOGTYPE);
-
 
         // Post the logs
         logPost = LogPost.getInstance();
-        logPost.setTags(finalTags);
         logPost.setType(logType);
         logPost.setCompressLogFile(compressLogFile);
-        logPost.post(getApplicationContext(), TAG_POST_LOGS, null, new File(filename), createLogPostListener());
+        final File attachment = !TextUtils.isEmpty(filename) ? new File(filename) : null;
+        logPost.post(getApplicationContext(), TAG_POST_LOGS, null, attachment, createLogPostListener());
     }
 
     private LogPost.LogPostListener createLogPostListener() {
@@ -167,12 +139,6 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
             case DIALOG_CONFIRM_LOG_POST:
                 AlertDialog.Builder postDialogBuilder = new AlertDialog.Builder(this);
                 postDialogBuilder.setTitle(getString(R.string.confirm_post_log));
-
-                final ConfirmDialogLayout layout = new ConfirmDialogLayout(this);
-                int sidePadding = dpToPixel(10);
-                layout.setInputMargins(sidePadding, 0, sidePadding, 0);
-
-                postDialogBuilder.setView(layout);
                 postDialogBuilder.setNegativeButton(getString(R.string.cancel), new android.content.DialogInterface.OnClickListener() {
 
                     @Override
@@ -185,8 +151,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do the post
-                        tags = layout.getTags(); //for retry dialog
-                        startLogPost(tags);
+                        startLogPost();
                     }
                 });
                 // Return the dialog
@@ -207,7 +172,7 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do the post
-                        startLogPost(tags);
+                        startLogPost();
                     }
                 });
                 return retryDialogBuilder.create();
@@ -222,13 +187,10 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
         final Bundle extras = getIntent().getExtras();
         final boolean displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT);
         if (displayResult) {
-            String resultText = null;
             if (!TextUtils.isEmpty(logId)) {
                 Toast.makeText(this, R.string.log_post_success, Toast.LENGTH_LONG).show();
                 setResultAndFinish(RESULT_POST_SUCCESS);
             } else {
-                //resultText = Res.getString(this, "failed_to_post_generic");
-                //showDialog(DIALOG_RETRY_POST);
                 showDialog(DIALOG_RETRY_POST);
             }
         }
@@ -248,11 +210,5 @@ public class LogPostActivity extends Activity implements LogFileActListener, Sha
         final Intent data = new Intent();
         setResult(resultCode, data);
         finish();
-    }
-
-    private int dpToPixel(int dp) {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, metrics);
     }
 }

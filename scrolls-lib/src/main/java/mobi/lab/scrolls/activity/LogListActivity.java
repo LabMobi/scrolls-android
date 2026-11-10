@@ -76,14 +76,13 @@ public class LogListActivity extends ListActivity implements SharedConstants {
     /*
      * Params for log post
      */
-    private String[] tags;
     private boolean highlightEnabled;
     private boolean isLoading;
     private LogListMarker markerWorker;
     private LogListLoader searchWorker;
     private boolean displayResult;
     private boolean confirmPost;
-    private boolean compressLogFile;
+    private boolean compressLogFile = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +97,8 @@ public class LogListActivity extends ListActivity implements SharedConstants {
             logFolderPath = extras.getString(EXTRA_LOG_FOLDER_PATH);
             displayResult = extras.getBoolean(EXTRA_DISPLAY_RESULT, true);
             confirmPost = extras.getBoolean(EXTRA_CONFIRM, true);
-            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, false);
+            compressLogFile = extras.getBoolean(EXTRA_COMPRESS_LOG_FILE, true);
             highlightEnabled = extras.getBoolean(EXTRA_HIGHLIGHT_ENABLED, true);
-            tags = extras.getStringArray(EXTRA_POST_TAGS);
         }
 
         if (TextUtils.isEmpty(logFolderPath)) {
@@ -150,7 +148,6 @@ public class LogListActivity extends ListActivity implements SharedConstants {
         if (item != null) {
             final LogViewBuilder builder = new LogViewBuilder();
             builder.setFile(new File(item.getPath()));
-            builder.addTags(tags);
             builder.setConfirmEnabled(confirmPost);
             builder.setCompressLogFile(compressLogFile);
             builder.setHighlightEnabled(highlightEnabled);
@@ -231,37 +228,37 @@ public class LogListActivity extends ListActivity implements SharedConstants {
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_DELETE_ALL:
                 deleteLogFiles();
-                break;
+                return true;
             case MENU_ITEM_MARK_ERRORS:
                 markLogFilesWithErrors();
-                break;
+                return true;
         }
-        return super.onMenuItemSelected(featureId, item);
+        return super.onOptionsItemSelected(item);
     }
 
     /**
      * Create a typical ListActivity layout
      */
     protected View createLayout() {
-        // LinearLayoyut container
+        // LinearLayout container
         final LinearLayout viewContainer = new LinearLayout(this);
-        final LinearLayout.LayoutParams viewContainerParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final LinearLayout.LayoutParams viewContainerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         viewContainer.setLayoutParams(viewContainerParams);
 
         // Android ListView
         final ListView listView = new ListView(this);
-        final ListView.LayoutParams listViewParams = new ListView.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final ListView.LayoutParams listViewParams = new ListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         listView.setLayoutParams(listViewParams);
         listView.setId(android.R.id.list);
         listView.setFastScrollEnabled(true);
 
         // Android empty ListView TextView
         final TextView textView = new TextView(this);
-        final LayoutParams textViewParams = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final LayoutParams textViewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         textView.setLayoutParams(textViewParams);
         textView.setId(android.R.id.empty);
         textView.setGravity(Gravity.CENTER);
@@ -400,7 +397,6 @@ public class LogListActivity extends ListActivity implements SharedConstants {
         builder.setConfirmEnabled(confirmPost);
         builder.setCompressLogFile(compressLogFile);
         builder.setShowResultEnabled(displayResult);
-        builder.addTags(tags);
         builder.launchActivity(this);
     }
 

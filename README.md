@@ -43,19 +43,22 @@ NOTE: Before the Scrolls moved to Maven Central it used to have a different grou
 
 Replace the "X.Y.Z" part with the latest version of the library, available versions are visible at https://mvnrepository.com/artifact/mobi.lab.scrolls/scrolls.
 
-2) Update you application manifest, add Activity and Provider declarations:
+2) Update your application manifest to add the `ScrollsFileProvider` declaration (and optionally override the viewer activities if you want a dedicated launcher icon or custom theme):
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="sample.application"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
+        <!-- Optional: declare LogListActivity with MAIN/LAUNCHER if you want a separate launcher icon -->
         <activity
             android:name="mobi.lab.scrolls.activity.LogListActivity"
+            android:exported="true"
             android:label="Logs"
-            android:taskAffinity="sample.application.loglist"
-            android:theme="@style/AppTheme">
+            android:taskAffinity="${applicationId}.loglist"
+            android:theme="@style/AppTheme"
+            tools:replace="android:exported">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -63,10 +66,12 @@ Replace the "X.Y.Z" part with the latest version of the library, available versi
         </activity>
         <activity
             android:name="mobi.lab.scrolls.activity.LogPostActivity"
+            android:exported="false"
             android:process=".LogPostProcess"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="mobi.lab.scrolls.activity.LogReaderActivity"
+            android:exported="false"
             android:theme="@style/AppTheme"/>
 
         <provider
@@ -83,18 +88,8 @@ Replace the "X.Y.Z" part with the latest version of the library, available versi
 ```
 
 Notes:
-* `LogListActivity` creates a new `Log` launcher icon to show logs
-* `@style/AppTheme` styles the activities to better match the consuming application
-
-### Solving issues
-
-Scrolls is now moved to AndroidX. If you include it to a brand new project then you may get a compile error about conflicting pre- and post-AndroidX dependencies. To solve this make sure Jetifier is turned on from `gradle.properties`:
-
-```properties
-android.useAndroidX=true
-# ..
-android.enableJetifier=true
-```
+* `LogListActivity`, `LogReaderActivity`, and `LogPostActivity` are already registered in the library manifest with `android:exported="false"`. You only need to declare them in your app's `AndroidManifest.xml` if you want to add a launcher `<intent-filter>`, run `LogPostActivity` in a separate process, or apply a custom `@style/AppTheme`.
+* Both `ActionBar` and `NoActionBar` themes are supported (a fallback `Toolbar` is automatically added when the activity theme does not provide an `ActionBar`).
 
 
 
@@ -170,9 +165,9 @@ LogPostImpl.configure(this, BuildConfig.APPLICATION_ID + ".logs" /** Provider **
 /*
  * Get a new LogPostBuilder instance.
  * The builder object has several methods for configuring parameters.
+ * Log files are compressed into a .zip attachment by default (use builder.setCompressLogFile(false) to share raw .txt files).
  */
 LogPostBuilder builder = new LogPostBuilder();
-builder.addTags("my","first","post");    // Sample method to configure tags for the post
 /*
  * Do the actual post by starting log posting activity.
  */
@@ -199,11 +194,9 @@ Please see `RELEASE_GUIDE.md`
 ## Links
 
 - Scrolls on GitHub: https://github.com/MobiSolutions/scrolls-android
-- Sonatype OSSRH Nexus UI: [https://s01.oss.sonatype.org](https://s01.oss.sonatype.org/)
+- Sonatype Central Portal: https://central.sonatype.com/publishing
 - Scrolls artifacts on Maven Central: https://repo1.maven.org/maven2/mobi/lab/scrolls/scrolls/ (can take some time)
-  - Scrolls artifacts on Sonatype OSSRH: https://s01.oss.sonatype.org/content/groups/public/mobi/lab/scrolls/scrolls/ (available right away after publishing)
 - Original Sonatype OSSRH JIRA issue: https://issues.sonatype.org/browse/OSSRH-66630
   - Can be used to add user access
-- Project access Wiki: https://confluence.lab.mobi/display/DEV/Sonatype+Maven+Access+Credentials
+- Project access Wiki: https://labmobi.atlassian.net/wiki/spaces/DEV/pages/15990951/Sonatype+Maven+Access+Credentials
 - Codemagic CI: https://codemagic.io/apps
-- OSSRH guide: https://central.sonatype.org/publish/publish-guide/

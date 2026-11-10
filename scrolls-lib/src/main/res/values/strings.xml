@@ -3,7 +3,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
-    <string name="hint_tags_input">Comma separated tags</string>
     <string name="post_this_log">Post this log</string>
     <string name="delete_this_log">Delete this log</string>
     <string name="delete_all_except_current">Delete all except current</string>
@@ -25,6 +24,8 @@
     <string name="text_copied_to_clipboard">Line copied to clipboard</string>
     <string name="mark_error_logs">Mark logs with errors</string>
     <string name="reload_this_log">Reload</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="scroll_to_bottom">Scroll to bottom</string>
     <string name="retry">Retry</string>
     <string name="title_dialog_retry">Posting failed</string>
     <string name="title_email_chooser">Send email</string>

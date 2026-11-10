@@ -44,12 +44,16 @@ git commit -m "Add changelog for version X.Y.Z"
 git push
 ```
 
-2. Make sure the version code in the `develop` branch is correct. If needed—then update the library version from the `build.gradle` file in the project root folder:
+2. Make sure the version in the `develop` branch is correct. If needed—then update the library version components in the `build.gradle` file in the project root folder:
 
-```
-ext {
-    // Current version of the library
-    libraryVersion = "X.Y.Z"
+```groovy
+buildscript {
+    ext {
+        VERSION_MAJOR = "X"
+        VERSION_FEATURE = "Y"
+        VERSION_MINOR = "Z"
+        // ...
+    }
 }
 ```
 
@@ -95,12 +99,16 @@ git checkout develop
 git pull 
 ```
 
-- Keep the release number in the style of X.Y.Z.
+- Keep the release number in the style of X.Y.Z in the root `build.gradle`:
 
-```
-ext {
-    // Current version of the library
-    libraryVersion = "X.Y.Z"
+```groovy
+buildscript {
+    ext {
+        VERSION_MAJOR = "X"
+        VERSION_FEATURE = "Y"
+        VERSION_MINOR = "Z"
+        // ...
+    }
 }
 ```
 

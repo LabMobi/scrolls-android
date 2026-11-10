@@ -1,29 +1,30 @@
-apply plugin: 'com.android.application'
+plugins {
+    alias(libs.plugins.android.application)
+}
 
-repositories {
-    google()
-    mavenCentral()
+base {
+    archivesName = "scrolls-sample-${project.ext.versionName}"
 }
 
 android {
     namespace = "mobi.lab.scrolls.sample"
+    compileSdk = libs.versions.android.sdk.compile.get().toInteger()
 
     buildFeatures {
         buildConfig = true
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.valueOf(libs.versions.javaCompatibility.get())
+        targetCompatibility = JavaVersion.valueOf(libs.versions.javaCompatibility.get())
     }
-    compileSdkVersion project.ext.versionCompileSdk
+
     defaultConfig {
-        applicationId 'mobi.lab.scrolls.sample.java'
-        minSdkVersion project.ext.versionMinSdkVersion
-        targetSdkVersion project.ext.versionTargetSdk
-        versionCode project.ext.versionCode
-        versionName project.ext.versionName
-        project.archivesBaseName = "scrolls-sample-" + project.ext.versionName
+        applicationId = 'mobi.lab.scrolls.sample.java'
+        minSdk = libs.versions.android.sdk.min.get().toInteger()
+        targetSdk = libs.versions.android.sdk.target.get().toInteger()
+        versionCode = project.ext.versionCode
+        versionName = project.ext.versionName
 
         println 'CONF: versionName is set to: ' + versionName
         println 'CONF: versionCode is set to: ' + versionCode
@@ -33,24 +34,39 @@ android {
 
 // BuildAll tasks
 def GROUP_BUILD_TASKS = 'Build'
-task buildAllDebug(dependsOn: [':scrolls-lib:clean', ':scrolls-sample-java:clean', ':scrolls-lib:build',':scrolls-sample-java:build', ':scrolls-lib:lib_copy_artifacts'])
-buildAllDebug.group = GROUP_BUILD_TASKS
-buildAllDebug.description = "Build Scrolls library and Sample debug versions"
-
-task buildAllRelease(dependsOn: ['buildAllDebug'])
-buildAllRelease.group = GROUP_BUILD_TASKS
-buildAllRelease.description = "Build Scrolls library and Sample release versions"
-
-tasks.findByPath(':scrolls-sample-java:clean').mustRunAfter tasks.findByPath(':scrolls-lib:clean')
-tasks.findByPath(':scrolls-lib:build').mustRunAfter tasks.findByPath(':scrolls-sample-java:clean')
-tasks.findByPath(':scrolls-sample-java:build').mustRunAfter tasks.findByPath(':scrolls-lib:build')
-tasks.findByPath(':scrolls-lib:lib_copy_artifacts').mustRunAfter tasks.findByPath(':scrolls-sample-java:build')
-
-check.dependsOn ':scrolls-lib:check'
-afterEvaluate {
-    connectedAndroidTest.dependsOn 'scrolls-lib:connectedAndroidTest'
+tasks.register('buildAllDebug') {
+    group = GROUP_BUILD_TASKS
+    description = "Build Scrolls library and Sample debug versions"
+    dependsOn ':scrolls-lib:build', ':scrolls-sample-java:build', ':scrolls-lib:lib_copy_artifacts'
 }
-build.mustRunAfter clean
+
+tasks.register('buildAllRelease') {
+    group = GROUP_BUILD_TASKS
+    description = "Build Scrolls library and Sample release versions"
+    dependsOn 'buildAllDebug'
+}
+
+tasks.named('clean').configure {
+    mustRunAfter ':scrolls-lib:clean'
+}
+project(':scrolls-lib').tasks.named('build').configure {
+    mustRunAfter ':scrolls-sample-java:clean'
+}
+tasks.named('build').configure {
+    mustRunAfter ':scrolls-lib:build', 'clean'
+}
+project(':scrolls-lib').tasks.named('lib_copy_artifacts').configure {
+    mustRunAfter ':scrolls-sample-java:build'
+}
+
+tasks.named('check').configure {
+    dependsOn ':scrolls-lib:check'
+}
+afterEvaluate {
+    tasks.named('connectedAndroidTest').configure {
+        dependsOn ':scrolls-lib:connectedAndroidTest'
+    }
+}
 
 dependencies {
     implementation project(':scrolls-lib')

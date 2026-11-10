@@ -5,7 +5,9 @@
         android:name="mobi.lab.scrolls.sample.SampleApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
-        <activity android:name="mobi.lab.scrolls.sample.HelloLogPostActivity">
+        <activity
+            android:name="mobi.lab.scrolls.sample.HelloLogPostActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -14,12 +16,15 @@
 
         <activity
             android:name="mobi.lab.scrolls.activity.LogListActivity"
+            android:exported="false"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="mobi.lab.scrolls.activity.LogReaderActivity"
+            android:exported="false"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="mobi.lab.scrolls.activity.LogPostActivity"
+            android:exported="false"
             android:theme="@style/AppTheme"/>
 
         <!--The consuming application must define a file provider to support
