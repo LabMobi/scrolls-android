@@ -1,32 +1,29 @@
-apply plugin: 'signing'
-apply plugin: 'com.android.library'
-apply plugin: 'com.vanniktech.maven.publish'
+plugins {
+    id 'signing'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.vanniktech.maven.publish)
+}
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
+base {
+    archivesName = "scrolls-lib"
 }
 
 android {
     namespace = "mobi.lab.scrolls"
+    compileSdk = libs.versions.android.sdk.compile.get().toInteger()
 
     buildFeatures {
         buildConfig = true
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.valueOf(libs.versions.javaCompatibility.get())
+        targetCompatibility = JavaVersion.valueOf(libs.versions.javaCompatibility.get())
     }
-    compileSdkVersion project.ext.versionCompileSdk
+
     defaultConfig {
-        minSdkVersion project.ext.versionMinSdkVersion
-        targetSdkVersion project.ext.versionTargetSdk
-        versionName project.ext.versionName
-        versionCode project.ext.versionCode
-        project.archivesBaseName = "scrolls-" + project.ext.versionName
+        minSdk = libs.versions.android.sdk.min.get().toInteger()
+
         // Use a separate field for the version name
         buildConfigField "String", 'VERSION_NAME', "\"${project.ext.versionName}\""
 
@@ -36,20 +33,12 @@ android {
         println 'CONF: is a release build: ' + project.ext.isRelease
     }
 
-    libraryVariants.configureEach { variant ->
-        def variantVersionName = "unknown"
-        def variantVersionFileName = ""
-        if (variant.getName() == "debug") {
-            variantVersionName = "debug"
-            variantVersionFileName = "-debug"
-        } else if (variant.getName() == "release") {
-            variantVersionName = "release"
-            variantVersionFileName = ""
-        }
-        variant.outputs.all {
-            output ->
-                outputFileName = "${project.name}-${variantVersionName}.aar"
-        }
+    lint {
+        targetSdk = libs.versions.android.sdk.target.get().toInteger()
+    }
+
+    testOptions {
+        targetSdk = libs.versions.android.sdk.target.get().toInteger()
     }
 }
 
@@ -61,30 +50,27 @@ project.ext.libProguardFiles = fileTree(project(':scrolls-lib').projectDir.absol
     include '*mapping.txt'
 }
 
-task(lib_copy_artifacts) doLast {
-    if (project.ext.artifactDir != null) {
-        println "Coping Scrolls Library artifacts to " + project.ext.artifactDir + " .."
-        copy {
-            rename('mapping.txt', "${project.name}-mapping-${project.ext.versionCode}.txt")
-            from libFiles
-            from libProguardFiles
-            into file(project.ext.artifactDir)
-            eachFile { println it.file }
+tasks.register('lib_copy_artifacts') {
+    doLast {
+        if (project.ext.artifactDir != null) {
+            println "Coping Scrolls Library artifacts to " + project.ext.artifactDir + " .."
+            copy {
+                rename('mapping.txt', "${project.name}-mapping-${project.ext.versionCode}.txt")
+                from libFiles
+                from libProguardFiles
+                into file(project.ext.artifactDir)
+                eachFile { println it.file }
+            }
         }
     }
 }
 
 dependencies {
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.annotation:annotation:1.0.0'
+    implementation libs.androidx.core
+    implementation libs.androidx.annotation
 }
 
 mavenPublishing {
-    // the first parameter represents which variant is published
-    // the second whether to publish a sources jar
-    // the third whether to publish a javadoc jar
-    //configure(new AndroidSingleVariantLibrary("release", true, true))
-
     // false - manual release required via https://central.sonatype.com/publishing/deployments
     publishToMavenCentral(false)
 
@@ -125,12 +111,10 @@ tasks.register('buildAndPublishRelease') {
     dependsOn ":scrolls-sample-java:buildAllRelease", "publishToMavenCentral"
 }
 
-publishToMavenCentral.mustRunAfter tasks.findByPath(':scrolls-sample-java:buildAllRelease')
+tasks.named('publishToMavenCentral').configure {
+    mustRunAfter ':scrolls-sample-java:buildAllRelease'
+}
 
 ext {
     libraryVersion = project.ext.publishVersionName
 }
-
-
-
-

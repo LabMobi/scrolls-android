@@ -1,55 +1,42 @@
-/**
- * Major version component.
- */
-final String VERSION_MAJOR = "2"
-/**
- * Feature version component.
- */
-final String VERSION_FEATURE = "1"
-/**
- * Tweak version component.
- */
-final String VERSION_MINOR = "0"
-
 buildscript {
-    ext.vanniktech = '0.33.0'
-    ext.gradle_plugin_version = '8.10.0'
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:$gradle_plugin_version"
-        classpath "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin:$vanniktech"
+    ext {
+        /**
+         * Major version component.
+         */
+        VERSION_MAJOR = "2"
+        /**
+         * Feature version component.
+         */
+        VERSION_FEATURE = "1"
+        /**
+         * Tweak version component.
+         */
+        VERSION_MINOR = "0"
+
+        versionName = "0.0.1"
+        publicVersionName = "0.0.1"
+        versionCode = 1
+        isRelease = false
     }
 }
 
-ext {
-    versionName = "0.0.1"
-    publicVersionName = "0.0.1"
-    versionCode = 1
-    isRelease = false
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.vanniktech.maven.publish) apply false
+    alias(libs.plugins.gradleVersions)
 }
 
 allprojects {
     ext {
         // Paths
         artifactDir = "" // We will set this down below
-
-
-        // Tool versions
-        versionCompileSdk = 28
-        versionMinSdkVersion = 16
-        versionTargetSdk = 28
-
-        // Dependency versions
-        versionSupport = "27.1.1"
     }
 
     buildscript {
         project.group = "mobi"
         // Yes yes, I am cheating here.
-        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildLibRelease")
+        project.ext.isRelease = project.gradle.startParameter.taskNames.contains("buildAllRelease") || project.gradle.startParameter.taskNames.contains("buildLibRelease")
 
         String suppliedBuildNumber = "$System.env.BUILD_NUMBER"
         // VersionCode
@@ -60,9 +47,9 @@ allprojects {
         }
 
         // VersionName
-        String baseVersionName = VERSION_MAJOR + "." + VERSION_FEATURE + "." + VERSION_MINOR
+        String baseVersionName = "$VERSION_MAJOR.$VERSION_FEATURE.$VERSION_MINOR"
         // This one we use internally and for artifact naming
-        project.ext.versionName = baseVersionName + (isRelease ? ".release_" : ".devbuild_") + project.ext.versionCode
+        project.ext.versionName = baseVersionName + (project.ext.isRelease ? ".release_" : ".devbuild_") + project.ext.versionCode
         // This one we use for publishing
         project.ext.publishVersionName = baseVersionName
 
@@ -81,5 +68,31 @@ allprojects {
             dirs 'libs'
         }
         mavenCentral()
+    }
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
+}
+
+// Gradle-versions plugin: Don't show non stable updates for current stable versions
+def isNonStable = { String version ->
+    def stableKeyword = ["RELEASE", "FINAL", "GA"].any { keyword -> version.toUpperCase().contains(keyword) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+// Gradle-versions plugin
+dependencyUpdates {
+    checkForGradleUpdate = true
+
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+                    reject("Release candidate")
+                }
+            }
+        }
     }
 }

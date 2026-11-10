@@ -1,0 +1,24 @@
+[versions]
+android-sdk-min = '25'
+android-sdk-target = '36'
+android-sdk-compile = '37'
+
+javaCompatibility = "VERSION_21"
+
+android-gradle-plugin = "9.5.1"
+vanniktechPublish = "0.37.0"
+gradleVersions = "0.67.0"
+
+annotationVersion = "1.11.0"
+coreVersion = "1.19.1"
+
+[plugins]
+android-application = { id = 'com.android.application', version.ref = 'android-gradle-plugin' }
+android-library = { id = 'com.android.library', version.ref = 'android-gradle-plugin' }
+vanniktech-maven-publish = { id = 'com.vanniktech.maven.publish', version.ref = 'vanniktechPublish' }
+# For ./gradlew dependencyUpdates
+gradleVersions = { id = 'io.github.ben-manes.versions', version.ref = 'gradleVersions' }
+
+[libraries]
+androidx-annotation = { module = 'androidx.annotation:annotation', version.ref = 'annotationVersion' }
+androidx-core = { module = 'androidx.core:core', version.ref = 'coreVersion' }
