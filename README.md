@@ -45,7 +45,8 @@ Replace the "X.Y.Z" part with the latest version of the library, available versi
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
         <!-- Optional: declare LogListActivity with MAIN/LAUNCHER if you want a separate launcher icon -->
@@ -54,7 +55,8 @@ Replace the "X.Y.Z" part with the latest version of the library, available versi
             android:exported="true"
             android:label="Logs"
             android:taskAffinity="${applicationId}.loglist"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            tools:replace="android:exported">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

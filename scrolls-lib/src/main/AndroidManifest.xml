@@ -3,15 +3,12 @@
     <application>
         <activity
             android:name="mobi.lab.scrolls.activity.LogListActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme" />
+            android:exported="false" />
         <activity
             android:name="mobi.lab.scrolls.activity.LogReaderActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme" />
+            android:exported="false" />
         <activity
             android:name="mobi.lab.scrolls.activity.LogPostActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme" />
+            android:exported="false" />
     </application>
 </manifest>
