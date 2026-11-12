@@ -1,16 +1,21 @@
 [versions]
 android-sdk-min = '25'
 android-sdk-target = '36'
-android-sdk-compile = '37'
+# Keep consumer baseline conservative for a shared library (see AGENTS.md)
+android-sdk-compile = '36'
 
-javaCompatibility = "VERSION_21"
+javaCompatibility = "VERSION_17"
 
 android-gradle-plugin = "9.5.1"
 vanniktechPublish = "0.37.0"
 gradleVersions = "0.67.0"
 
-annotationVersion = "1.11.0"
-coreVersion = "1.19.1"
+# Keep transitive library dependencies at a conservative baseline so consuming apps
+# are not forced onto bleeding-edge compileSdk, AGP, or Kotlin metadata versions.
+#noinspection GradleDependency
+annotationVersion = "1.9.1"
+#noinspection GradleDependency
+coreVersion = "1.16.0"
 
 [plugins]
 android-application = { id = 'com.android.application', version.ref = 'android-gradle-plugin' }

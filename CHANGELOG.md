@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.1] - 2026-11-12
+### Changed
+- Lowered Java compatibility target from Java 21 to Java 17 (`VERSION_17`).
+- Lowered `compileSdk` from `37` to `36` and configured `aarMetadata.minCompileSdk = 25` on `scrolls-lib`.
+- Downgraded `androidx.core:core` from `1.19.1` to `1.16.0` and `androidx.annotation:annotation` from `1.11.0` to `1.9.1` so consuming apps on AGP `8.6.0+` and `compileSdk 35+` are not forced onto AGP 9.1+ or SDK 37.
+
 ## [2.1.0] - 2026-11-10
 ### Added
 - Added "Scroll to top" and "Scroll to bottom" options menu actions in `LogReaderActivity`.
