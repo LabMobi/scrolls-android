@@ -11,7 +11,7 @@ buildscript {
         /**
          * Tweak version component.
          */
-        VERSION_MINOR = "0"
+        VERSION_MINOR = "1"
 
         versionName = "0.0.1"
         publicVersionName = "0.0.1"

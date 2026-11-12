@@ -24,6 +24,10 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.sdk.min.get().toInteger()
 
+        aarMetadata {
+            minCompileSdk = libs.versions.android.sdk.min.get().toInteger()
+        }
+
         // Use a separate field for the version name
         buildConfigField "String", 'VERSION_NAME', "\"${project.ext.versionName}\""
 

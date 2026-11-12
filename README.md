@@ -17,6 +17,13 @@ Scrolls is easily configurable and can be used in conjunction with other logging
 
 ## Getting started
 
+#### Compatibility
+
+- **Minimum Android SDK (`minSdk`):** `25` (Android 7.1)
+- **Consumer `compileSdk`:** `35+` (via `androidx.core:core:1.16.0`)
+- **Consumer Android Gradle Plugin:** `8.6.0+`
+- **Java bytecode target:** Java `17`
+
 #### Adding the library to a project
 
 1) Add the Scrolls dependency declaration to your module's `build.gradle` file, to the dependencies enclosure:
